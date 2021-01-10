@@ -20,7 +20,7 @@ extern "C" {
 // version 6 is still in beta at the time of writing
 // go to tools -> manage libraries, search for ArduinoJSON and install the
 // latest version 5
-#error Please upgrade/downgrade ArduinoJSON library to version 5!
+//#error Please upgrade/downgrade ArduinoJSON library to version 5!
 #endif
 
 #include "A_config.h"

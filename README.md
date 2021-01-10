@@ -1,6 +1,8 @@
 # Deauther
 Esp8266 deauther with captive portal and update GUI
 
+# firmware 
+- [firmware build sẵn ở đây](firmware/)
 ## Tính năng
 
 - Ngắt kết nối bất kì mạng WiFi 2.4Ghz nào có thể quét thấy được, làm ngắt kết nối tất cả các thiết bị đang kết nối vào mạng đó.
