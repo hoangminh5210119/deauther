@@ -1,35 +1,40 @@
 # Deauther
+
 Esp8266 deauther with captive portal and update GUI. Web version is supported
 
 # firmware 
+
 - [firmware oled and web](firmware/)
+
 ## Tính năng
 
 - Ngắt kết nối bất kì mạng WiFi 2.4Ghz nào có thể quét thấy được, làm ngắt kết nối tất cả các thiết bị đang kết nối vào mạng đó.
 - Captive portal bao gồm WiFi, Facebook, Zalo, Phone, Twitter.
 - Attack và Captive portal có thể hoạt động cùng lúc.
-- Hỗ trợ bàn phím nhấn trực tiếp trên thiết bị.
 - Lưu thông tin người dùng trực tiếp vào File system của thiết bị.
-- Có thể thao tác trực tiếp trên thiết bị mà không cần tới thiết bị khác.
-- Có chế độ ngủ sâu (deepsleep) cho phép thiết bị có thể hoạt động lâu hơn (khoảng vài ngày tùy vào cài đặt) chọn theo mức (1 phút -> 10 phút on screen).
-
+- Hỗ trợ cài đặt trên web mà không cần màn hình
 
 ## Cài đặt
+
 - Cài đặt theo hướng dẫn gốc ở [đây](https://github.com/SpacehuhnTech/esp8266_deauther/wiki)
 - copy thư viện trong thư mục lib vào thư viện của arduino
 
 ## Video demo deauther
+
 - [Deauther video](https://www.youtube.com/watch?v=lw4Dw__N6mw)
 
 ## thiết bị hỗ trợ 
+
 - ESP8266 4M flash trở lên (ESP32 không hỗ trợ).
 - Hoặc mua hỗ trợ mình thiết bị [ESP8266 oled 1.3" battery 100mA](https://shopee.vn/Esp8266-m%C3%A0n-h%C3%ACnh-oled-1.3--i.28473572.7534622099)
 
 
 ## BẢN QUYỀN
+
 - Các bạn có thể lấy code để đăng hoặc viết bài trên các diễn đàn trong hoặc ngoài nước nhưng lưu ý xin ghi nguồn cụ thể.
 
 ## KHƯỚC TỪ TRÁCH NHIỆM
+
 - Dự án này chỉ nhằm mục đích giúp kiểm tra bảo mật của WiFi và giúp cho người dùng biết để phòng ngừa người xấu lợi dụng tấn công chuộc lợi.
 - Việc sử dụng để tấn công cơ quan tổ chức hay cơ sở hạ tầng không thuộc quyền sở hữu là hành vi bất hợp pháp.
 - Xin nhắc lại thiết bị chỉ được dùng cho mục đích nghiên cứu, thử nghiệm nên tác giả không chịu bất kỳ trách nhiệm pháp lý và không chịu trách nhiệm về bất kỳ sự lạm dụng để gây thiệt hại do kẻ xấu gây ra.
@@ -48,8 +53,6 @@ Esp8266 deauther with captive portal and update GUI. Web version is supported
 ## Liên hệ
 - facebook: [Do Hoang Minh](https://www.facebook.com/dohoang.minh.90)
 
-## Đóng góp
-- [Vượng Nguyễn](https://github.com/244v234/ESP8266-WifiPhisher/tree/main/ESP8266-WifiPhisher) Đóng góp bản tiếng anh cho WiFi và Facebook
 ## Tham khảo
 Tham khảo chính là ở đây [esp8266_deauther của SpacehuhnTech](https://github.com/SpacehuhnTech/esp8266_deauther)
 
