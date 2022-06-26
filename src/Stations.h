@@ -10,6 +10,11 @@ extern "C" {
 #include "Accesspoints.h"
 #include "Names.h"
 
+#include "Telnet.h"
+
+extern Telnet telnet;
+
+
 #define STATION_LIST_SIZE 60
 extern Accesspoints accesspoints;
 extern Names    names;

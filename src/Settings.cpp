@@ -123,7 +123,7 @@ void Settings::reset() {
   setCaptiveType(CAPTIVE_TYPE::PHONE);
 
   // GENERAL
-  setLang(F("en"));
+  setLang(F("vi"));
   setAutosave(true);
   setAutosaveTime(10000);
   setDisplayInterface(USE_DISPLAY);

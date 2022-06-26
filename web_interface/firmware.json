@@ -1,0 +1,87 @@
+[
+    {
+        "name": "DHT11 1-Wire",
+        "version": "1",
+        "url": "dht11.bin"
+    },
+    {
+        "name": "DHT22 1-Wire",
+        "version": "1",
+        "url": "dht22.bin"
+    },
+    {
+        "name": "BH1750 I2C",
+        "version": "1",
+        "url": "bh1750.bin"
+    },
+    {
+        "name": "BME280 I2C",
+        "version": "1",
+        "url": "bme280.bin"
+    },
+    {
+        "name": "Digital",
+        "version": "1",
+        "url": "digital.bin"
+    },
+    {
+        "name": "Weather station",
+        "version": "1",
+        "url": "weatherStation.bin"
+    },
+    {
+        "name": "Deauther",
+        "version": "1",
+        "url": "deautherCaptivePortal.bin"
+    },
+    {
+        "name": "SHT21 I2C",
+        "version": "1",
+        "url": "sht21.bin"
+    },
+    {
+        "name": "Game",
+        "version": "1",
+        "url": "game.bin"
+    },
+    {
+        "name": "SGP30 I2C",
+        "version": "1",
+        "url": "sgp30.bin"
+    },
+    {
+        "name": "MQ-XX Analog",
+        "version": "1",
+        "url": "mq.bin"
+    },
+    {
+        "name": "BMP180 I2C Test",
+        "version": "1",
+        "url": "bmp180.bin"
+    },
+    {
+        "name": "R305 UART Test",
+        "version": "1",
+        "url": "r305.bin"
+    },
+    {
+        "name": "DS18B20 1-Wire Test ",
+        "version": "1",
+        "url": "ds18b20.bin"
+    },
+    {
+        "name": "CCS811 I2C Test ",
+        "version": "1",
+        "url": "ccs811.bin"
+    },
+    {
+        "name": "MHZ19 I2C Test ",
+        "version": "1",
+        "url": "mhz19.bin"
+    },
+    {
+        "name": "MAX0100 I2C Test ",
+        "version": "1",
+        "url": "max30100.bin"
+    }
+]

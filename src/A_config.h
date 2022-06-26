@@ -83,10 +83,10 @@ D4 - GPIO2
     Only one of them can be defined at a time!
    = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 */
- #define DEAUTHER_DISPLAY SSD1306Wire display = SSD1306Wire(0x3c, 5, 4) // for
+// #define DEAUTHER_DISPLAY SSD1306Wire display = SSD1306Wire(0x3c, 5, 4) // for
 // 0.96" OLED
-//#define DEAUTHER_DISPLAY                                                       \
-//  SH1106Wire display = SH1106Wire(0x3c, 5, 4); // for 1.3" OLED
+#define DEAUTHER_DISPLAY                                                       \
+  SH1106Wire display = SH1106Wire(0x3c, 5, 4); // for 1.3" OLED
 
 /*  RST = GPIO 5 (D1)
     DC = GPIO 4 (D2)

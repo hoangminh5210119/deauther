@@ -251,9 +251,6 @@ const char CLI_SCRIPT_DONE[] PROGMEM = "Done executing script";
 const char CLI_HELP_HEADER[] PROGMEM = "[===== List of commands =====]";
 const char CLI_HELP_FOOTER[] PROGMEM =
     "========================================================================"
-    "\r\nfor more information please visit "
-    "github.com/spacehuhn/"
-    "esp8266_deauther\r\n======================================================"
     "==================";
 const char CLI_ERROR_NAME_LEN[] PROGMEM = "ERROR : Name length 0";
 const char CLI_ERROR_MAC_LEN[] PROGMEM = "ERROR : MAC length 0";
@@ -489,6 +486,7 @@ const char D_TIME_ON_SCREEN[] PROGMEM = "On Screen Time";
 const char D_RESET[] PROGMEM = "Reset";
 const char D_REBOOT[] PROGMEM = "Reboot";
 const char D_EXIT[] PROGMEM = "Exit";
+const char D_UPDATE[] PROGMEM = "update";
 
 // GAME MENU
 const char D_GAME_T_REX[] PROGMEM = "T-Rex";

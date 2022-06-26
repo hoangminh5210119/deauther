@@ -71,22 +71,27 @@ void Stations::removeOldest() {
 
 void Stations::printAll() {
   prntln(ST_HEADER);
+  telnet.println(ST_HEADER);
   int c = count();
 
-  if (c == 0)
+  if (c == 0) {
     prntln(ST_LIST_EMPTY);
-  else
+    telnet.println(ST_LIST_EMPTY);
+  } else
     for (int i = 0; i < c; i++)
       print(i, i == 0, i == c - 1);
 }
 
 void Stations::printSelected() {
   prntln(ST_HEADER);
+  telnet.println(ST_HEADER);
+
   int max = selected();
   int c = count();
 
   if (max == 0) {
     prntln(ST_NO_DEVICES_SELECTED);
+    telnet.println(ST_NO_DEVICES_SELECTED);
     return;
   }
 
@@ -107,6 +112,8 @@ void Stations::print(int num, bool header, bool footer) {
   if (header) {
     prntln(ST_TABLE_HEADER);
     prntln(ST_TABLE_DIVIDER);
+    telnet.println(ST_TABLE_HEADER);
+    telnet.println(ST_TABLE_DIVIDER);
   }
 
   prnt(leftRight(String(), (String)num, 2));
@@ -119,8 +126,19 @@ void Stations::print(int num, bool header, bool footer) {
   prnt(leftRight(String(SPACE) + getTimeStr(num), String(), 10));
   prntln(leftRight(String(SPACE) + getSelectedStr(num), String(), 9));
 
+  telnet.print(leftRight(String(), (String)num, 2));
+  telnet.print(leftRight(String(SPACE) + getMacStr(num), String(), 18));
+  telnet.print(leftRight(String(SPACE), (String)getCh(num), 3));
+  telnet.print(leftRight(String(SPACE) + getNameStr(num), String(), 17));
+  telnet.print(leftRight(String(SPACE) + getVendorStr(num), String(), 9));
+  telnet.print(leftRight(String(SPACE), (String)*getPkts(num), 9));
+  telnet.print(leftRight(String(SPACE) + getAPStr(num), String(), 33));
+  telnet.print(leftRight(String(SPACE) + getTimeStr(num), String(), 10));
+  telnet.println(leftRight(String(SPACE) + getSelectedStr(num), String(), 9));
+
   if (footer)
     prntln(ST_TABLE_DIVIDER);
+  telnet.println(ST_TABLE_DIVIDER);
 }
 
 String Stations::getAPStr(int num) {
@@ -264,6 +282,8 @@ void Stations::select(int num) {
   internal_select(num);
   prnt(ST_SELECTED_STATION);
   prntln(num);
+  telnet.print(ST_SELECTED_STATION);
+  telnet.println(String(num));
   changed = true;
 }
 
@@ -274,6 +294,8 @@ void Stations::deselect(int num) {
   internal_deselect(num);
   prnt(ST_DESELECTED_STATION);
   prntln(num);
+  telnet.print(ST_DESELECTED_STATION);
+  telnet.println(String(num));
   changed = true;
 }
 
@@ -284,6 +306,8 @@ void Stations::remove(int num) {
   internal_remove(num);
   prnt(ST_REMOVED_STATION);
   prntln(num);
+  telnet.print(ST_REMOVED_STATION);
+  telnet.println(String(num));
   changed = true;
 }
 
@@ -312,6 +336,7 @@ void Stations::selectAll() {
   for (int i = 0; i < count(); i++)
     internal_select(i);
   prntln(ST_SELECTED_ALL);
+  telnet.println(ST_SELECTED_ALL);
   changed = true;
 }
 
@@ -319,6 +344,7 @@ void Stations::deselectAll() {
   for (int i = 0; i < count(); i++)
     internal_deselect(i);
   prntln(ST_DESELECTED_ALL);
+  telnet.println(ST_DESELECTED_ALL);
   changed = true;
 }
 
@@ -339,6 +365,8 @@ bool Stations::check(int num) {
   } else {
     prnt(ST_ERROR_ID);
     prntln(num);
+    telnet.print(ST_ERROR_ID);
+    telnet.println(String(num));
     return false;
   }
 }

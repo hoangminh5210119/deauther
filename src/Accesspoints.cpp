@@ -37,21 +37,25 @@ void Accesspoints::add(uint8_t id, bool selected) {
 
 void Accesspoints::printAll() {
   prntln(AP_HEADER);
+  telnet.println(AP_HEADER);
   int c = count();
 
-  if (c == 0)
+  if (c == 0) {
     prntln(AP_LIST_EMPTY);
-  else
+    telnet.println(AP_LIST_EMPTY);
+  } else
     for (int i = 0; i < c; i++)
       print(i, i == 0, i == c - 1);
 }
 
 void Accesspoints::printSelected() {
   prntln(AP_HEADER);
+  telnet.println(AP_HEADER);
   int max = selected();
 
   if (selected() == 0) {
     prntln(AP_NO_AP_SELECTED);
+    telnet.println(AP_NO_AP_SELECTED);
     return;
   }
   int c = count();
@@ -74,6 +78,8 @@ void Accesspoints::print(int num, bool header, bool footer) {
   if (header) {
     prntln(AP_TABLE_HEADER);
     prntln(AP_TABLE_DIVIDER);
+    telnet.println(AP_TABLE_HEADER);
+    telnet.println(AP_TABLE_DIVIDER);
   }
   prnt(leftRight(String(), (String)num, 2));
   prnt(leftRight(String(SPACE) + getSSID(num), String(), 33));
@@ -85,8 +91,19 @@ void Accesspoints::print(int num, bool header, bool footer) {
   prnt(leftRight(String(SPACE) + getVendorStr(num), String(), 9));
   prntln(leftRight(String(SPACE) + getSelectedStr(num), String(), 9));
 
+  telnet.print(leftRight(String(), (String)num, 2));
+  telnet.print(leftRight(String(SPACE) + getSSID(num), String(), 33));
+  telnet.print(leftRight(String(SPACE) + getNameStr(num), String(), 17));
+  telnet.print(leftRight(String(SPACE), (String)getCh(num), 3));
+  telnet.print(leftRight(String(SPACE), (String)getRSSI(num), 5));
+  telnet.print(leftRight(String(SPACE), getEncStr(num), 5));
+  telnet.print(leftRight(String(SPACE) + getMacStr(num), String(), 18));
+  telnet.print(leftRight(String(SPACE) + getVendorStr(num), String(), 9));
+  telnet.println(leftRight(String(SPACE) + getSelectedStr(num), String(), 9));
+
   if (footer) {
     prntln(AP_TABLE_DIVIDER);
+    telnet.println(AP_TABLE_DIVIDER);
   }
 }
 
@@ -218,6 +235,8 @@ void Accesspoints::select(int num) {
 
   prnt(AP_SELECTED);
   prntln(getSSID(num));
+  telnet.print(AP_SELECTED);
+  telnet.println(String(getSSID(num)));
 
   changed = true;
 }
@@ -230,6 +249,8 @@ void Accesspoints::deselect(int num) {
 
   prnt(AP_DESELECTED);
   prntln(getSSID(num));
+  telnet.print(AP_DESELECTED);
+  telnet.println(String(getSSID(num)));
 
   changed = true;
 }
@@ -240,6 +261,9 @@ void Accesspoints::remove(int num) {
 
   prnt(AP_REMOVED);
   prntln(getSSID(num));
+
+  telnet.print(AP_REMOVED);
+  telnet.println(String(getSSID(num)));
 
   internal_remove(num);
 
@@ -271,6 +295,7 @@ void Accesspoints::selectAll() {
   for (int i = 0; i < count(); i++)
     list->replace(i, AP{list->get(i).id, true});
   prntln(AP_SELECTED_ALL);
+  telnet.println(AP_SELECTED_ALL);
   changed = true;
 }
 
@@ -278,6 +303,7 @@ void Accesspoints::deselectAll() {
   for (int i = 0; i < count(); i++)
     list->replace(i, AP{list->get(i).id, false});
   prntln(AP_DESELECTED_ALL);
+  telnet.println(AP_DESELECTED_ALL);
   changed = true;
 }
 
@@ -285,6 +311,7 @@ void Accesspoints::removeAll() {
   while (count() > 0)
     internal_remove(0);
   prntln(AP_REMOVED_ALL);
+  telnet.println(AP_REMOVED_ALL);
   changed = true;
 }
 
@@ -314,6 +341,8 @@ bool Accesspoints::check(int num) {
 
   prnt(AP_NO_AP_ERROR);
   prntln((String)num);
+  telnet.print(AP_NO_AP_ERROR);
+  telnet.println((String)num);
   return false;
 }
 

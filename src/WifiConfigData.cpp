@@ -92,6 +92,22 @@ void WifiConfigData::add(bool selected, String ssid, String pass) {
   list->add(WIFI{selected, ssid.c_str(), pass.c_str()});
 }
 
+bool WifiConfigData::smartconfigNotAlert() {
+  initLCD();
+  WiFi.mode(WIFI_STA);
+  WiFi.beginSmartConfig();
+  while (true) {
+    display.drawString(40, 20, F("smartconfig"));
+    display.drawString(40, 34, F("watting..."));
+    display.display();
+    if (WiFi.smartConfigDone()) {
+      break;
+    }
+    delay(100);
+  }
+  return true;
+}
+
 unsigned long timeout = 60000; // 1 minute
 bool WifiConfigData::smartconfig() {
   initLCD();

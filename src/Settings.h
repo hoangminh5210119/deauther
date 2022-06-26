@@ -12,7 +12,7 @@ extern "C" {
 #include "WifiConfigData.h"
 #include "language.h"
 
-#define VERSION "v2.1.0"
+#define VERSION "v1.1"
 
 extern void checkFile(String path, String data);
 extern JsonVariant parseJSONFile(String path, DynamicJsonBuffer &jsonBuffer);
@@ -147,7 +147,7 @@ private:
   String password = "12345678";
   bool nonepassword = true;
   bool hidden = false;
-  String lang = "en";
+  String lang = "vi";
 
   String FILE_PATH = "/settings.json";
 

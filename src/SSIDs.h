@@ -13,6 +13,11 @@ extern "C" {
 #include "Settings.h"
 #include "Accesspoints.h"
 
+#include "Telnet.h"
+
+extern Telnet telnet;
+
+
 #define SSID_LIST_SIZE 60
 
 extern Settings settings;

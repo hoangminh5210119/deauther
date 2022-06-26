@@ -11,6 +11,10 @@ extern "C" {
 #include "language.h"
 #include "SimpleList.h"
 
+#include "Telnet.h"
+
+extern Telnet telnet;
+
 #define NAME_LIST_SIZE 25
 #define NAME_MAX_LENGTH 16
 

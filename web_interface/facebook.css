@@ -1,0 +1,413 @@
+/* mark */
+.touch,
+.touch td,
+.touch input,
+.touch textarea .touch button {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px
+}
+
+
+/* mark */
+body,
+p,
+figure,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul,
+ol,
+li,
+dl,
+dd,
+dt {
+    margin: 0;
+    padding: 0
+}
+
+
+
+/* mark */
+ul,
+ol {
+    list-style: none
+}
+
+@media only screen and (min-device-width : 320px) and (max-device-width : 568px) and (orientation : portrait) {
+    /* body {
+        max-width: 248px;
+        margin: auto;
+    }
+
+    @-ms-viewport {
+        max-width: 248px;
+    } */
+
+    /* CSS for 320px layout goes here */
+
+}
+
+/* mark */
+._52z6 {
+    min-width: 100px;
+    text-align: center
+}
+
+/* mark */
+._52j9 {
+    color: #90949c
+}
+
+
+
+/* mark */
+._52jc {
+    font-size: 12px;
+    line-height: 16px
+}
+
+
+
+/* mark */
+._52jh {
+    font-weight: bold
+}
+
+
+
+/* mark */
+._52jj {
+    text-align: center
+}
+
+
+
+/* mark */
+.touch .mfss {
+    font-size: 12px;
+    line-height: 15px
+}
+
+/* mark */
+.touch,
+.touch tr,
+.touch input,
+.touch textarea,
+.touch .mfsm {
+    font-size: 14px;
+    line-height: 18px
+}
+
+
+/* mark */
+.touch .btn {
+    background-clip: padding-box;
+    border: solid 1px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: inline-block;
+    font-weight: bold;
+    min-width: 50px;
+    overflow: hidden;
+    padding: 0 8px;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+    white-space: nowrap
+}
+
+/* mark */
+html .touch .btn {
+    line-height: 27px
+}
+
+
+
+/* mark */
+.touch .btn.btnD.bgb,
+.touch .btn.btnC,
+.touch .btn.btnI.bgb,
+.touch .btn.btnS,
+.touch .btn.btnN {
+    color: #fff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, .35)
+}
+
+
+/* mark */
+.touch a {
+    color: #576b95;
+    cursor: pointer;
+    text-decoration: none
+}
+
+/* mark */
+.touch ._7om2 {
+    display: flex;
+    display: -webkit-flex
+}
+
+/* mark */
+.touch ._4g33,
+.touch ._5i2i {
+    display: flex
+}
+
+/* mark */
+.touch ._52we {
+    align-items: center
+}
+
+/* mark */
+.touch ._4g34 {
+    -webkit-flex: 1;
+    flex: 1;
+    min-width: 0;
+    width: 0
+}
+
+/* mark */
+.fcg {
+    color: gray
+}
+
+
+/* mark */
+._55x2>*,
+._55x2._55x2>* {
+    border-bottom: 1px solid #e5e5e5
+}
+
+/* mark */
+._55x2>:last-child {
+    border-bottom: none
+}
+
+
+/* mark */
+.touch ._55wr {
+    padding: 8px
+}
+
+
+/* mark */
+.touch ._56bs {
+    border: none;
+    border-radius: 3px;
+    box-sizing: border-box;
+    position: relative;
+    -webkit-user-select: none;
+    z-index: 0
+}
+
+
+
+/* mark  */
+.touch ._56bs::before,
+.touch.wp.x1-5 ._56bs::before,
+.touch.wp.x2 ._56bs::before {
+    border-radius: 4px;
+    bottom: -1px;
+    content: "";
+    left: -1px;
+    pointer-events: none;
+    position: absolute;
+    right: -1px;
+    top: -1px;
+    transform: none;
+    z-index: -1
+}
+
+
+
+/* mark */
+._56bu,
+._56bv,
+a._56bu,
+a._56bv,
+.touch a._56bu,
+.touch a._56bv,
+a.touchable._56bu,
+a.touchable._56bv {
+    color: #fff
+}
+
+
+/* mark */
+._56bw {
+    font-size: 14px;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 16px
+}
+
+
+
+/* mark */
+._56bs._56b_ {
+    display: block;
+    width: 100%
+}
+
+
+/* mark */
+._56bg {
+    border: 0;
+    display: block;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+
+/* mark */
+._2pi9 {
+    padding-left: 12px;
+    padding-right: 12px
+}
+
+/* mark */
+._2pie {
+    padding-top: 12px
+}
+
+
+/* mark */
+.touch ._5ui2 ._5dpw {
+    text-align: center
+}
+
+/* mark */
+.touch ._5ui3 {
+    padding: 6px
+}
+
+/* mark */
+._3j87 {
+    margin: 0 auto
+}
+
+
+/* mark */
+.touch ._5rut {
+    margin: 0 auto;
+    max-width: 416px
+}
+
+/* mark */
+.touch ._4u9z {
+    padding: 12px
+}
+
+/* mark */
+._5soa ._5rut .other-links {
+    padding-bottom: 36px;
+    text-align: center
+}
+
+/* mark */
+._5soa ._5rut .other-links._8pux {
+    padding-bottom: 38px
+}
+
+/* mark */
+.touch ._5soa ._5rut .other-links._8p_m a {
+    color: #7596c8;
+    font-family: 'Roboto-Regular', 'Helvetica', 'sans-serif';
+    font-size: 14px;
+    line-height: 16px
+}
+
+/* mark */
+._5t3b {
+    padding: 12px 0 12px 0
+}
+
+/* mark */
+html .touch ._5soa ._28le {
+    background: #00a400;
+    border: none;
+    box-shadow: none
+}
+
+/* mark */
+.touch ._5t3b a._5t3c {
+    height: 36px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 5px
+}
+
+/* mark */
+._43mg {
+    display: block;
+    overflow: hidden;
+    text-align: center;
+    white-space: nowrap
+}
+
+/* mark */
+._8qtb {
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 10px;
+    width: 90%
+}
+
+/* mark */
+._43mg>span {
+    display: inline-block;
+    position: relative
+}
+
+/* mark */
+._43mg>span:before,
+._43mg>span:after {
+    background: #ccd0d5;
+    content: '';
+    height: 1px;
+    position: absolute;
+    top: 50%;
+    width: 9999px
+}
+
+/* mark */
+._43mg>span:before {
+    margin-right: 15px;
+    right: 100%
+}
+
+/* mark */
+._43mg>span:after {
+    left: 100%;
+    margin-left: 15px
+}
+
+/* mark */
+._43mh {
+    color: #4b4f56
+}
+
+/* mark */
+.touch ._5soa ._28lf::before {
+    background-color: #1877f2;
+    background-image: none
+}
+
+
+
+/* mark */
+.touch ._27z2 {
+    line-height: 20px
+}
+
+
+/* mark */
+.touch ._216i a {
+    border-radius: 4px;
+    color: #3578e5;
+    font-weight: bold;
+    padding: 4px
+}

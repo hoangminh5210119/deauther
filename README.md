@@ -1,8 +1,8 @@
 # Deauther
-Esp8266 deauther with captive portal and update GUI
+Esp8266 deauther with captive portal and update GUI. Web version is supported
 
 # firmware 
-- [firmware build sẵn ở đây](firmware/)
+- [firmware oled and web](firmware/)
 ## Tính năng
 
 - Ngắt kết nối bất kì mạng WiFi 2.4Ghz nào có thể quét thấy được, làm ngắt kết nối tất cả các thiết bị đang kết nối vào mạng đó.
@@ -25,10 +25,6 @@ Esp8266 deauther with captive portal and update GUI
 - ESP8266 4M flash trở lên (ESP32 không hỗ trợ).
 - Hoặc mua hỗ trợ mình thiết bị [ESP8266 oled 1.3" battery 100mA](https://shopee.vn/Esp8266-m%C3%A0n-h%C3%ACnh-oled-1.3--i.28473572.7534622099)
 
-## Lưu ý
-- Vì có thể lấy được thông tin người dùng nên nó chỉ thích hợp cho mục đích học tập và nghiên cứu.
-- Mình chỉ đưa lên với mục đích học tập và nghiên cứu nên mọi hành động gây ra bất kỳ hậu quả xấu nào hoặc lợi dụng thiết bị gây ra những hành vi vi phạm pháp luật mình sẽ không chịu trách nhiệm.
-- Captive portal mình chỉ để lại phần phone, facebook (phần này mới được update do có bạn đóng góp bản dịch). phần bên web mình viết không ổn cho lắm nên các bạn tự viết lại phần đó nhé (phía trong biến rỗng). Chức năng khác hoạt động bình thường. 
 
 ## BẢN QUYỀN
 - Các bạn có thể lấy code để đăng hoặc viết bài trên các diễn đàn trong hoặc ngoài nước nhưng lưu ý xin ghi nguồn cụ thể.

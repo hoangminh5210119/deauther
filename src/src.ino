@@ -28,29 +28,22 @@ extern "C" {
 #include "CLI.h"
 #include "Credential.h"
 
-#include "Alert.h"
-
-#include "DeviceSleep.h"
-#include "DisplayUI.h"
-
-#include "Keyboard.h"
 #include "Names.h"
 
 #include "SSIDs.h"
 #include "Scan.h"
 #include "Settings.h"
+#include "Telnet.h"
+
 #include "WifiConfigData.h"
+#include "deautherDetector.h"
 #include "functions.h"
+#include "imagefile.h"
 #include "language.h"
 #include "oui.h"
 #include "webfiles.h"
 
-#include <MD5Builder.h>
-
-// #include "CarRaceGame.h"
-// #include "FlappyBirdGame.h"
-// #include "PongGame.h"
-// #include "TRexGame.h"
+Telnet telnet;
 
 Settings settings;
 Names names;
@@ -60,36 +53,19 @@ Stations stations;
 Scan scan;
 Attack attack;
 CLI cli;
-DisplayUI displayUI;
+
 Credential credential;
 WifiConfigData wifiConfig;
 
-Alert alert;
-Keyboard keyboard;
-DeviceSleep deviceSleep;
-
-// PongGame pongGame;
-// CarRaceGame carRaceGame;
-// TRexGame trexGame;
-// FlappyBirdGame flappyBird;
-
 #include "wifi.h"
 
-// #include "ESPAsyncWebServer.h"
+void writeString(char add, String data);
+String readString(char add);
 
 uint32_t autosaveTime = 0;
 uint32_t currentTime = 0;
 
 bool booted = false;
-
-MD5Builder _md5;
-
-String md5(String str) {
-  _md5.begin();
-  _md5.add(String(str));
-  _md5.calculate();
-  return _md5.toString();
-}
 
 void setup() {
   // for random generator
@@ -100,6 +76,7 @@ void setup() {
   Serial.println();
   // Start EEPROM
   EEPROM.begin(4096);
+  // delay(2000);
 
   prnt(SETUP_MOUNT_SPIFFS);
   prntln(SPIFFS.begin() ? SETUP_OK : SETUP_ERROR);
@@ -134,33 +111,19 @@ void setup() {
   // set mac for station
   wifi_set_macaddr(STATION_IF, settings.getMacSt());
 
-  // start display
-
-  if (settings.getDisplayInterface()) {
-    // displayUI.initLcd();
-    displayUI.setup();
-    displayUI.mode = displayUI.DISPLAY_MODE::INTRO;
-  }
-
   names.load();
   ssids.load();
   cli.load();
-  keyboard.init();
+
   wifiConfig.init();
   credential.init();
-  alert.setupButton();
-  deviceSleep.setup();
 
-  // pongGame.setup();
-  // carRaceGame.setup();
+  telnet.setup();
 
   credential.toSerial();
   wifiConfig.toSerial();
 
-  // create scan.json
   scan.setup();
-
-  // alert.init();
 
   // set channel
   setWifiChannel(settings.getChannel());
@@ -185,50 +148,55 @@ void setup() {
   }
   // STARTED
   prntln(SETUP_STARTED);
-
-  // version
+  setupMdns();
   prntln(settings.getVersion());
 }
 
-// unsigned long _oldTimeAttack = millis();
-// unsigned int _updateTimeAttack = 1000;
-unsigned long cnt = 0;
-void loop() {
-  cnt = cnt + 1;
-  currentTime = millis();
-  wifiUpdate(); // manage access point
-  attack.update();
-  // if (attack.isRunning()) {
-  //   if (millis() - _oldTimeAttack > _updateTimeAttack) {
-  //     attack.update(); // run attacks
-  //     _updateTimeAttack = millis();
-  //   }
-  // }
-  //  prnt("data count: ");
-  //  prntln(String(cnt));
-  displayUI.update();
-  cli.update();   // read and run serial input
-  scan.update();  // run scan
-  ssids.update(); // run random mode, if enabled
+bool isGetUpdate = false;
+bool isResetupMdns = false;
+bool isSetWiFiMode = false;
+int cnt = 0;
 
-  // prntln(analogRead(A0));
-  // delay(100);
-  // auto-save
-  if (settings.getAutosave() &&
-      (currentTime - autosaveTime > settings.getAutosaveTime())) {
-    autosaveTime = currentTime;
-    names.save(false);
-    ssids.save(false);
-    settings.save(false);
+void loop() {
+  if (!isDetectDeauther) {
+    if (isSetWiFiMode) {
+      wifi_set_opmode(STATIONAP_MODE);
+      wifi_promiscuous_enable(false);
+      if (cnt > 10) {
+        isSetWiFiMode = false;
+      }
+      cnt = cnt + 1;
+    }
+    if (WiFi.status() == WL_CONNECTED) {
+      if (!isResetupMdns) {
+        isResetupMdns = MDNS.close();
+        setupMdns();
+      }
+    }
+
+    wifiUpdate(); // manage access point
+    attack.update();
+    scan.update();  // run scan
+    ssids.update(); // run random mode, if enabled
+
+    if (settings.getAutosave() &&
+        (currentTime - autosaveTime > settings.getAutosaveTime())) {
+      autosaveTime = currentTime;
+      names.save(false);
+      ssids.save(false);
+      settings.save(false);
+    }
+  } else {
+    isSetWiFiMode = true;
+    cnt = 0;
   }
 
+  currentTime = millis();
+  cli.update(); // read and run serial input
+
   if (!booted) {
-    // reset boot counter
     EEPROM.write(0, 0);
     EEPROM.commit();
     booted = true;
-#ifdef HIGHLIGHT_LED
-    displayUI.setupLED();
-#endif // ifdef HIGHLIGHT_LED
   }
 }

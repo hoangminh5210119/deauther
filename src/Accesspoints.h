@@ -10,6 +10,11 @@ extern "C" {
 #include "SimpleList.h"
 #include "Names.h"
 
+#include "Telnet.h"
+
+extern Telnet telnet;
+
+
 extern Names names;
 
 extern String searchVendor(uint8_t* mac);

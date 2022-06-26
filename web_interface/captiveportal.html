@@ -1,0 +1,110 @@
+<!Doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=0.8, minimal-ui">
+	<meta name="description" content="ESP8266 Deauther">
+	<meta name="author" content="Spacehuhn - Stefan Kremser">
+	<meta name="theme-color" content="#36393E" />
+	<title>ESP8266 Deauther</title>
+	<link rel="stylesheet" href="style.css">
+	<script src="js/site.js"></script>
+	<script src="js/scan.js"></script>
+</head>
+
+<body onload="loadLang()">
+	<nav>
+		<a href="scan.html" data-translate="scan">Scan</a>
+		<a href="ssids.html" data-translate="ssids">SSIDs</a>
+		<a href="attack.html" data-translate="attacks">Attacks</a>
+		<a href="captiveportal.html" data-translate="captivePortal">Captive Portal</a>
+		<a href="credential.html" data-translate="credential">Credential</a>
+		<a href="update.html" data-translate="update">Update</a>
+		<a href="settings.html" data-translate="settings">Settings</a>
+		<a class="right" href="info.html" data-translate="info">Info</a>
+	</nav>
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<div id="error" class="hide"></div>
+				<h1 class="header" data-translate="captivePortal">Captive Portal</h1>
+				<button onclick="captivePortalAttack()" class="red" data-translate="attacks">Attack</button>
+				<button onclick="load()" data-translate="reload" class="right">Reload</button>
+			</div>
+		</div>
+		<div class="row ">
+			<div class='row'>
+				<div class='col-12'>
+					<p>- Chức năng này có thể gây ảnh hưởng tới người khác. <br>
+						- Bạn phải cân nhắc và tự chịu trách nhiệm trước
+						hành vi của mình. <br>
+						- Chỉ sử dụng với mạng riêng tư của bạn và không lợi dụng đánh cắp thông tin của người khác để
+						trục lợi. <br>
+						- Nếu bạn sử dụng chức năng này với mục đích xấu đi ngược lại với mục đích ban đầu của dự án,
+						hành vi đó có thể xem là hành vi vi phạm pháp luật. <br>
+						- Vui lòng đọc kỹ thông báo ban đầu trước khi dùng chức năng này.
+					</p>
+				</div>
+			</div>
+			<div class='row'>
+				<div class='col-6'>
+					<label class='' for='ssid_name' data-translate="fakessid">FAKE SSID :</label>
+				</div>
+				<div class='col-6'>
+					<input type='text' name='ssid_name' id="ssid_captive">
+				</div>
+			</div>
+			<div class='row'>
+				<div class='col-12'>
+					<!-- <p>lang()</p> -->
+					<hr>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-6">
+					<label for="captivePortal" data-translate="captivePortal">Captive portal</label>
+				</div>
+				<div class="col-6">
+					<select id="captivePortal_id" name="captivePortal">
+						<option value="0">Facebook</option>
+						<option value="1">Zalo</option>
+						<option value="2">Phone</option>
+						<option value="3">Twitter</option>
+						<option value="4">Wifi</option>
+					</select>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-12">
+				<hr>
+				<h2><span data-translate="victim">VICTIM</span>: <span id="apNum"></span></h2>
+				<table id="apTable"></table>
+				<hr>
+
+				<div class="hide">
+					<select id="ch" name="ch"></select>
+					<h2><span>Stations</span>: <span id="stNum"></span></h2>
+					<table id="stTable"></table>
+					<h2><span data-translate="devices">Saved Devices</span>: <span id="nNum"></span></h2>
+					<table id="nTable"></table>
+				</div>
+
+
+				<div id="copyright">
+					<a href="https://github.com/spacehuhn/esp8266_deauther/wiki" target="_blank">Wiki</a> | <a
+						href="https://github.com/spacehuhn/esp8266_deauther" target="_blank">GitHub</a><br>
+					<br>
+					Version 2.0<br>
+					Copyright (c) 2018 Stefan Kremser<br>
+					<a href="https://github.com/spacehuhn" target="_blank">github.com/spacehuhn</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
