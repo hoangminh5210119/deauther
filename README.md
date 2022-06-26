@@ -23,11 +23,6 @@ Esp8266 deauther with captive portal and update GUI. Web version is supported
 
 - [Deauther video](https://www.youtube.com/watch?v=lw4Dw__N6mw)
 
-## thiết bị hỗ trợ 
-
-- ESP8266 4M flash trở lên (ESP32 không hỗ trợ).
-- Hoặc mua hỗ trợ mình thiết bị [ESP8266 oled 1.3" battery 100mA](https://shopee.vn/Esp8266-m%C3%A0n-h%C3%ACnh-oled-1.3--i.28473572.7534622099)
-
 
 ## BẢN QUYỀN
 
